@@ -1,0 +1,35 @@
+create-database:
+  handler: app/api/lambdas/database/handler.createDatabase
+  description: 'Create new database'
+  events:
+    - http:
+        method: POST
+        path: /databases
+get-all-databases:
+  handler: app/api/lambdas/database/handler.getDatabases
+  description: 'Get all database'
+  events:
+    - http:
+        method: GET
+        path: /databases
+get-one-database:
+  handler: app/api/lambdas/database/handler.getDatabase
+  description: 'Get one database by id'
+  events:
+    - http:
+        method: GET
+        path: /databases/{id}
+update-one-database:
+  handler: app/api/lambdas/database/handler.updateDatabase
+  description: 'Update one database by id'
+  events:
+    - http:
+        method: PUT
+        path: /databases/{id}
+delete-one-database:
+  handler: app/api/lambdas/database/handler.deleteDatabase
+  description: 'Delete one database by id'
+  events:
+    - http:
+        method: DELETE
+        path: /databases/{id}
