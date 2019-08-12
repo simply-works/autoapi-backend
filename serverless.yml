@@ -1,0 +1,34 @@
+service: autoapi
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-east-2
+  memorySize: 512
+  #aws KMS config
+  #awsKmsKeyArn: arn:aws:kms:us-east-1:XXXXXX:key/some-hash
+
+  #VPC details
+  vpc:
+    securityGroupIds:
+      - "<security group ID>"
+    subnetIds:
+      - "<subnet ID>"
+
+  #CORS configuration
+  cors:
+  origin: '*'
+  headers:
+    - Content-Type
+    - Authorization
+    - X-Api-Key
+    - Access-Control-Allow-Origin
+    - Access-Control-Allow-Methods
+  allowCredentials: true
+  
+plugins:
+- serverless-offline
+
+functions:
+- ${file(app/api/lambdas/database/functions.yml)}
+- ${file(app/api/lambdas/project/functions.yml)}
