@@ -1,8 +1,34 @@
 const databaseService = require('../../services/databaseService');
 const constants = require('../../../utils/constants').constants;
 
+module.exports.createRecord = async (event, context) => {
+    try {
+        let createRecord = await databaseService.createDatabase({}, {}, JSON.parse(event.body));
+        console.log('createRecord', createRecord);
+        let body = {};
+        let statusCode = '';
+        if (createRecord && createRecord.body && createRecord.body.id) {
+            body.createdRecord = createRecord.body;
+            statusCode = createRecord.status;
+            body.message = createRecord.message;
+        } else {
+            statusCode = 500;
+            body.message = "Error while creating record"
+        }
+        return {
+            statusCode,
+            body: JSON.stringify(body),
+        }
+    }
+    catch (error) {
+        return {
+            statusCode: error.status,
+            body: JSON.stringify(error.message)
+        }
+    }
+}
 
-module.exports.getDatabases = async (event, context) => {
+module.exports.getAllRecords = async (event, context) => {
     try {
         let allDatabases = await databaseService.getDatabases();
         console.log('databaseCreate', allDatabases);
@@ -30,7 +56,7 @@ module.exports.getDatabases = async (event, context) => {
     }
 }
 
-module.exports.getDatabase = async (event, context) => {
+module.exports.getRecordById = async (event, context) => {
     try {
         let result = await databaseService.getDatabase(event.pathParameters);
         console.log('result', result);
@@ -58,36 +84,7 @@ module.exports.getDatabase = async (event, context) => {
     }
 }
 
-module.exports.createDatabase = async (event, context) => {
-    try {
-        let createRecord = await databaseService.createDatabase({}, {}, JSON.parse(event.body));
-        console.log('createRecord', createRecord);
-        let body = {};
-        let statusCode = '';
-        if (createRecord && createRecord.body && createRecord.body.id) {
-            body.createdRecord = createRecord.body;
-            statusCode = createRecord.status;
-            body.message = createRecord.message;
-        } else {
-            statusCode = 500;
-            body.message = "Error while creating record"
-        }
-        return {
-            statusCode,
-            body: JSON.stringify(body),
-        }
-    }
-    catch (error) {
-        return {
-            statusCode: error.status,
-            body: JSON.stringify(error.message)
-        }
-    }
-}
-
-
-
-module.exports.updateDatabase = async (event, context) => {
+module.exports.updateRecord = async (event, context) => {
     try {
         let updateRecord = await databaseService.updateDatabase(event.pathParameters, {}, JSON.parse(event.body));
         console.log('databaseUpdate', updateRecord);
@@ -114,7 +111,7 @@ module.exports.updateDatabase = async (event, context) => {
     }
 }
 
-module.exports.deleteDatabase = async (event, context) => {
+module.exports.deleteRecord = async (event, context) => {
     try {
         let deletedDatabase = await databaseService.deleteDatabase(event.pathParameters);
         console.log('databaseDeleted', deletedDatabase);

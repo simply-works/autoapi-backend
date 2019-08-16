@@ -2,14 +2,15 @@
 
 const postgresHelper = require('../../db/postgresHelper');
 const constants = require('../../utils/constants').constants;
+const config = require('../../../config/config');
 /**
- * Get Databases details from database.
+ * Get all records details from database.
  */
-exports.getDatabases = async (path, query, body) => {
+exports.getRecords = async (path, query, body) => {
 	try {
 		let responseObj = {};
 		Object.assign(responseObj, constants.defaultServerResponse);
-		let results = await postgresHelper.findRecords('Database');
+		let results = await postgresHelper.findRecords(config.tableName);
 		if (results && results.length) {
 			console.log('result', results);
 			responseObj.body = results;
@@ -20,22 +21,22 @@ exports.getDatabases = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
-		console.log('Error while getting databases', error);
+		console.log('Error while getting records', error);
 		return responseObj;
 	}
 }
 
 /**
- * Get Databases details from database.
+ * Get single record by id from database.
  */
-exports.getDatabase = async (path, query, body) => {
+exports.getRecordById = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
 		let filter = {
 			id: path.id
 		}
-		let results = await postgresHelper.findRecords('Database', filter);
+		let results = await postgresHelper.findRecords(config.tableName, filter);
 		if (results && results.length) {
 			responseObj.status = 200;
 			responseObj.body = results;
@@ -49,17 +50,17 @@ exports.getDatabase = async (path, query, body) => {
 	}
 }
 /**
- * Create database and save data in database.
+ * Create record in database.
  */
-exports.createDatabase = async (path, query, body) => {
+exports.createRecord = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
-		let createdDatabase = await postgresHelper.createRecord('Database', body);
-		if (createdDatabase && createdDatabase.id) {
+		let createdRecord = await postgresHelper.createRecord(config.tableName, body);
+		if (createdRecord && createdRecord.id) {
 			responseObj.status = 201;
 			responseObj.message = "Created successfully";
-			responseObj.body = createdDatabase;
+			responseObj.body = createdRecord;
 		} else {
 			responseObj.message = "Unable to create";
 		}
@@ -70,9 +71,9 @@ exports.createDatabase = async (path, query, body) => {
 }
 
 /**
- * Update database details
+ * Update record details
  */
-exports.updateDatabase = async (path, query, body) => {
+exports.updateRecord = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
@@ -80,7 +81,7 @@ exports.updateDatabase = async (path, query, body) => {
 		let filter = {
 			id: path.id
 		}
-		let result = await postgresHelper.updateRecord('Database', data, filter);
+		let result = await postgresHelper.updateRecord(config.tableName, data, filter);
 		if (result.indexOf(0) === 0) {
 			responseObj.message = "Record not found";
 			responseObj.status = 404;
@@ -90,22 +91,22 @@ exports.updateDatabase = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
-		console.log('Error while updating database', error);
+		console.log('Error while updating record', error);
 		return responseObj;
 	}
 }
 
 /**
- * Delete database information.
+ * Delete record
  */
-exports.deleteDatabase = async (path, query, body) => {
+exports.deleteRecord = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
 		let filter = {
 			id: path.id
 		}
-		let result = await postgresHelper.deleteRecord('Database', filter);
+		let result = await postgresHelper.deleteRecord(config.tableName, filter);
 		console.log('result', result);
 
 		if (result && (result !== 0)) {
@@ -117,7 +118,7 @@ exports.deleteDatabase = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
-		console.log('Error while deleting database', error);
+		console.log('Error while deleting record', error);
 		return responseObj;
 	}
 }

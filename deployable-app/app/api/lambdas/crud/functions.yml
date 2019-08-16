@@ -1,35 +1,35 @@
-create-database:
-  handler: app/api/lambdas/database/handler.createDatabase
-  description: 'Create new database'
+create-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.createRecord
+  description: 'Create new record'
   events:
     - http:
         method: POST
-        path: /databases
-get-all-databases:
-  handler: app/api/lambdas/database/handler.getDatabases
-  description: 'Get all database'
+        path: /<path>
+get-all-records:
+  handler: deployable-app/app/api/lambdas/crud/handler.getAllRecords
+  description: 'Get all records'
   events:
     - http:
         method: GET
-        path: /databases
-get-one-database:
-  handler: app/api/lambdas/database/handler.getDatabase
-  description: 'Get one database by id'
+        path: /<path>
+get-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.getRecordById
+  description: 'Get one record by id'
   events:
     - http:
         method: GET
-        path: /databases/{id}
-update-one-database:
-  handler: app/api/lambdas/database/handler.updateDatabase
-  description: 'Update one database by id'
+        path: /<path>/{id}
+update-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.updateRecord
+  description: 'Update one record by id'
   events:
     - http:
         method: PUT
-        path: /databases/{id}
-delete-one-database:
-  handler: app/api/lambdas/database/handler.deleteDatabase
-  description: 'Delete one database by id'
+        path: /<path>/{id}
+delete-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.deleteRecord
+  description: 'Delete one record by id'
   events:
     - http:
         method: DELETE
-        path: /databases/{id}
+        path: /<path>/{id}

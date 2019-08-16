@@ -1,6 +1,4 @@
-
-
-var postgresDb = require('../models/index');
+var postgresDb = require('./createDynamicModel');
 var constants = require('../utils/constants').constants;
 
 module.exports.createRecord = async (tableName, data) => {
@@ -12,7 +10,6 @@ module.exports.createRecord = async (tableName, data) => {
         throw new Error({error:constants.SERVER_ERROR,code: 500});
     }
 }
-
 
 module.exports.findRecords = async (tableName, query) => {
     try {
@@ -35,6 +32,7 @@ module.exports.findRecords = async (tableName, query) => {
         throw new Error(e);
     }
 }
+
 // Generic function to fetch records order by need to pass [["column_name","order(either ascending or descending)"]]
 module.exports.findRecordsWithOrderBy = async (tableName, query, order=[]) => {
     try {
@@ -58,7 +56,6 @@ module.exports.findRecordsWithOrderBy = async (tableName, query, order=[]) => {
         throw new Error(e);
     }
 }
-
 
 module.exports.updateRecord = async (tableName, data, query) => {
     try {
