@@ -10,10 +10,20 @@ module.exports = {
         required: true,
         allowNull: false
       },
+      name: {
+        type: Sequelize.STRING,
+        required: true
+      },
       schema: {
         type: Sequelize.JSONB,
         required: true,
         allowNull: false
+      },
+      api_gateway_uri: {
+        type: Sequelize.STRING
+      },
+      lambda_uri: {
+        type: Sequelize.STRING
       },
       database_id: { //FK
         type: Sequelize.INTEGER,

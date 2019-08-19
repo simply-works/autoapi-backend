@@ -18,12 +18,6 @@ module.exports = (sequelize, DataTypes) => {
 			required: true,
 			allowNull: false
 		},
-		api_gateway_uri: {
-			type: DataTypes.STRING
-		},
-		lambda_uri: {
-			type: DataTypes.STRING
-		},
 		vpc_name: {
 			type: DataTypes.STRING,
 		},

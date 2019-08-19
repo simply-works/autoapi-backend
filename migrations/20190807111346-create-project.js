@@ -19,12 +19,6 @@ module.exports = {
         required: true,
         allowNull: false
       },
-      api_gateway_uri: {
-        type: Sequelize.STRING
-      },
-      lambda_uri: {
-        type: Sequelize.STRING
-      },
       vpc_name: { 
         type: Sequelize.STRING,
       },	

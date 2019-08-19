@@ -8,10 +8,20 @@ module.exports = (sequelize, DataTypes) => {
             required: true,
             allowNull: false
         },
+        name: {
+            type: DataTypes.STRING,
+            required: true
+        },
         schema: {
             type: DataTypes.JSONB,
             required: true,
             allowNull: false
+        },
+        api_gateway_uri: {
+            type: DataTypes.STRING
+        },
+        lambda_uri: {
+            type: DataTypes.STRING
         },
         database_id: { //FK
             type: DataTypes.INTEGER,
