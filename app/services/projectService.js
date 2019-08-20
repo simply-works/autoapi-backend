@@ -1,15 +1,15 @@
 'use strict';
 
-const postgresHelper = require('../../db/postgresHelper');
-const constants = require('../../utils/constants').constants;
+const postgresHelper = require('../db/postgresHelper');
+const constants = require('../utils/constants').constants;
 /**
  * Get Projects details from project.
  */
-exports.getProjects = async (path, query, body) => {
+exports.getProjects = async (path, query={}, body) => {
 	try {
 		let responseObj = {};
 		Object.assign(responseObj, constants.defaultServerResponse);
-		let results = await postgresHelper.findRecords('Project');
+		let results = await postgresHelper.findRecords('Project',query);
 		if (results && results.length) {
 			console.log('result', results);
 			responseObj.body = results;
@@ -108,7 +108,6 @@ exports.deleteProject = async (path, query, body) => {
 		}
 		let result = await postgresHelper.deleteRecord('Project', filter);
 		console.log('result', result);
-
 		if (result && (result !== 0)) {
 			responseObj.status = 204;
 			responseObj.message = "Deleted successfully";

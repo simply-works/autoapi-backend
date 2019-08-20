@@ -1,5 +1,5 @@
 const { replaceTextinFile, createNewFile } = require('../utils/fileUtil.js');
-
+const { dialect } = require('../../config/config');
 async function createServerlessYML(data) {
     let replacement = [{
         key: "pwd",
@@ -28,7 +28,12 @@ async function createServerlessYML(data) {
     {
         key: "tableName",
         value: data.tableName
-    },]
+    },
+    {
+        key: "dialect",
+        value: dialect
+    }
+    ]
     const filePath = '/deployable-app/staticServerless.yml';
     const outputFilePath = '/deployable-app/serverless.yml'
     replaceTextinFile(filePath, outputFilePath, replacement);
@@ -44,7 +49,7 @@ async function createFunctionsYML(tableName) {
     replaceTextinFile(filePath, outputFilePath, replacement);
 }
 
-async function updateTableSchema(schema) {;
+async function updateTableSchema(schema) {
     const outputFilePath = '/deployable-app/config/tableSchema.js';
     createNewFile(outputFilePath, schema);
 }

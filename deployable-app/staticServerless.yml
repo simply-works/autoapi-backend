@@ -22,7 +22,7 @@ provider:
     DB_NAME: dbName
     DB_HOST: host
     DB_PORT: port
-    DB_DIALECT: postgres
+    DB_DIALECT: dialect
     TABLE_NAME: tableName
 
   #CORS configuration

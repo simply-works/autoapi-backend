@@ -1,15 +1,15 @@
 'use strict';
 
-const postgresHelper = require('../../db/postgresHelper');
-const constants = require('../../utils/constants').constants;
+const postgresHelper = require('../db/postgresHelper');
+const constants = require('../utils/constants').constants;
 /**
- * Get Databases details from database.
+ * Get Tables details from table.
  */
-exports.getDatabases = async (path, query, body) => {
+exports.getTables = async (path, query={}, body) => {
 	try {
 		let responseObj = {};
 		Object.assign(responseObj, constants.defaultServerResponse);
-		let results = await postgresHelper.findRecords('Database');
+		let results = await postgresHelper.findRecords('Table',query);
 		if (results && results.length) {
 			console.log('result', results);
 			responseObj.body = results;
@@ -20,22 +20,22 @@ exports.getDatabases = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
-		console.log('Error while getting databases', error);
+		console.log('Error while getting tables', error);
 		return responseObj;
 	}
 }
 
 /**
- * Get Databases details from database.
+ * Get Tables details from table.
  */
-exports.getDatabase = async (path, query, body) => {
+exports.getTable = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
 		let filter = {
 			id: path.id
 		}
-		let results = await postgresHelper.findRecords('Database', filter);
+		let results = await postgresHelper.findRecords('Table', filter);
 		if (results && results.length) {
 			responseObj.status = 200;
 			responseObj.body = results;
@@ -49,17 +49,18 @@ exports.getDatabase = async (path, query, body) => {
 	}
 }
 /**
- * Create database and save data in database.
+ * Create table and save data in table.
  */
-exports.createDatabase = async (path, query, body) => {
+exports.createTable = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
-		let createdDatabase = await postgresHelper.createRecord('Database', body);
-		if (createdDatabase && createdDatabase.id) {
+		let createdTable = await postgresHelper.createRecord('Table', body);
+		console.log('createTable', createdTable);
+		if (createdTable && createdTable.id) {
 			responseObj.status = 201;
 			responseObj.message = "Created successfully";
-			responseObj.body = createdDatabase;
+			responseObj.body = createdTable;
 		} else {
 			responseObj.message = "Unable to create";
 		}
@@ -70,9 +71,9 @@ exports.createDatabase = async (path, query, body) => {
 }
 
 /**
- * Update database details
+ * Update table details
  */
-exports.updateDatabase = async (path, query, body) => {
+exports.updateTable = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
@@ -80,7 +81,7 @@ exports.updateDatabase = async (path, query, body) => {
 		let filter = {
 			id: path.id
 		}
-		let result = await postgresHelper.updateRecord('Database', data, filter);
+		let result = await postgresHelper.updateRecord('Table', data, filter);
 		if (result.indexOf(0) === 0) {
 			responseObj.message = "Record not found";
 			responseObj.status = 404;
@@ -90,22 +91,22 @@ exports.updateDatabase = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
-		console.log('Error while updating database', error);
+		console.log('Error while updating table', error);
 		return responseObj;
 	}
 }
 
 /**
- * Delete database information.
+ * Delete table information.
  */
-exports.deleteDatabase = async (path, query, body) => {
+exports.deleteTable = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
 		let filter = {
 			id: path.id
 		}
-		let result = await postgresHelper.deleteRecord('Database', filter);
+		let result = await postgresHelper.deleteRecord('Table', filter);
 		console.log('result', result);
 
 		if (result && (result !== 0)) {
@@ -117,7 +118,7 @@ exports.deleteDatabase = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
-		console.log('Error while deleting database', error);
+		console.log('Error while deleting table', error);
 		return responseObj;
 	}
 }
