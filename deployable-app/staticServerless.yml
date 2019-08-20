@@ -40,4 +40,4 @@ plugins:
 - serverless-offline
 
 functions:
-- ${file(deployable-app/app/api/lambdas/database/functions.yml)}
+- ${file(app/api/lambdas/crud/functions.yml)}

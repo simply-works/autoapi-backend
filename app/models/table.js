@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             type: DataTypes.STRING,
-            required: true
+            required: true,
+            allowNull: false
         },
         schema: {
             type: DataTypes.JSONB,
