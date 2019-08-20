@@ -1,5 +1,5 @@
 require('dotenv').config()
-const schema = require('./tableSchema.json')
+const schema = require('./tableSchema.js');
 
 module.exports = {
     username: process.env.DB_USERNAME,

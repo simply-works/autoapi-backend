@@ -1,5 +1,11 @@
 const tableService = require('../../services/tableService');
+const { getDatabase } = require('../../services/databaseService');
 const constants = require('../../../utils/constants').constants;
+const {
+    createFunctionsYML,
+    createServerlessYML,
+    updateTableSchema
+} = require('../../../awsautomation/lambdaGeneration');
 
 
 module.exports.getTables = async (event, context) => {
@@ -64,7 +70,15 @@ module.exports.createTable = async (event, context) => {
         console.log('createRecord', createRecord);
         let body = {};
         let statusCode = '';
-        if (createRecord && createRecord.body && createRecord.body.id) {
+        if (createRecord && createRecord.body && createRecord.body.id && createRecord.body.name) {
+            await createFunctionsYML(createRecord.body.name);
+            // fething database details for the table
+            let path = { id: createRecord.body.database_id }
+            let databaseDetails = await getDatabase(path);
+            databaseDetails = databaseDetails.body[0];
+            databaseDetails.tableName = createRecord.body.name;
+            await createServerlessYML(databaseDetails);
+            await updateTableSchema(createRecord.body.schema);
             body.createdRecord = createRecord.body;
             statusCode = createRecord.status;
             body.message = createRecord.message;

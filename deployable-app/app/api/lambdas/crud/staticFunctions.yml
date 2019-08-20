@@ -1,0 +1,35 @@
+create-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.createRecord
+  description: 'Create new record'
+  events:
+    - http:
+        method: POST
+        path: /<path>
+get-all-records:
+  handler: deployable-app/app/api/lambdas/crud/handler.getAllRecords
+  description: 'Get all records'
+  events:
+    - http:
+        method: GET
+        path: /<path>
+get-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.getRecordById
+  description: 'Get one record by id'
+  events:
+    - http:
+        method: GET
+        path: /<path>/{id}
+update-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.updateRecord
+  description: 'Update one record by id'
+  events:
+    - http:
+        method: PUT
+        path: /<path>/{id}
+delete-record:
+  handler: deployable-app/app/api/lambdas/crud/handler.deleteRecord
+  description: 'Delete one record by id'
+  events:
+    - http:
+        method: DELETE
+        path: /<path>/{id}

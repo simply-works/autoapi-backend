@@ -14,6 +14,16 @@ provider:
       - "<security group ID>"
     subnetIds:
       - "<subnet ID>"
+  
+  #environment variables
+  environment: 
+    DB_USERNAME: pwd
+    DB_PASSWORD: user
+    DB_NAME: dbName
+    DB_HOST: host
+    DB_PORT: port
+    DB_DIALECT: postgres
+    TABLE_NAME: tableName
 
   #CORS configuration
   cors:
@@ -28,11 +38,6 @@ provider:
   
 plugins:
 - serverless-offline
-custom: 
-  serverless-offline:
-    host: localhost
 
 functions:
-- ${file(app/api/lambdas/database/functions.yml)}
-- ${file(app/api/lambdas/project/functions.yml)}
-- ${file(app/api/lambdas/table/functions.yml)}
+- ${file(deployable-app/app/api/lambdas/database/functions.yml)}

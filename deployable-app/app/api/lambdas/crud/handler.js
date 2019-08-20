@@ -1,9 +1,9 @@
-const databaseService = require('../../services/databaseService');
+const crudService = require('../../services/crudService');
 const constants = require('../../../utils/constants').constants;
 
 module.exports.createRecord = async (event, context) => {
     try {
-        let createRecord = await databaseService.createDatabase({}, {}, JSON.parse(event.body));
+        let createRecord = await crudService.createRecord({}, {}, JSON.parse(event.body));
         console.log('createRecord', createRecord);
         let body = {};
         let statusCode = '';
@@ -30,14 +30,14 @@ module.exports.createRecord = async (event, context) => {
 
 module.exports.getAllRecords = async (event, context) => {
     try {
-        let allDatabases = await databaseService.getDatabases();
-        console.log('databaseCreate', allDatabases);
+        let allRecords = await crudService.getRecords();
+        console.log('recordCreate', allRecords);
         let body = {};
         let statusCode = '';
-        if (allDatabases.body && allDatabases.body.length && allDatabases.body[0].id) {
-            statusCode = allDatabases.status;
-            body.message = allDatabases.message;
-            body.databases = allDatabases.body
+        if (allRecords.body && allRecords.body.length && allRecords.body[0].id) {
+            statusCode = allRecords.status;
+            body.message = allRecords.message;
+            body.records = allRecords.body
         }
         else {
             statusCode = 400;
@@ -58,13 +58,13 @@ module.exports.getAllRecords = async (event, context) => {
 
 module.exports.getRecordById = async (event, context) => {
     try {
-        let result = await databaseService.getDatabase(event.pathParameters);
+        let result = await crudService.getRecordById(event.pathParameters);
         console.log('result', result);
         let statusCode = '';
         let body = {};
         if (result && result.body && result.body[0].id) {
             body.message = result.message;
-            body.database = result.body;
+            body.record = result.body;
         }
         else {
             statusCode = 400;
@@ -86,8 +86,8 @@ module.exports.getRecordById = async (event, context) => {
 
 module.exports.updateRecord = async (event, context) => {
     try {
-        let updateRecord = await databaseService.updateDatabase(event.pathParameters, {}, JSON.parse(event.body));
-        console.log('databaseUpdate', updateRecord);
+        let updateRecord = await crudService.updateRecord(event.pathParameters, {}, JSON.parse(event.body));
+        console.log('recordUpdate', updateRecord);
         let statusCode = '';
         let body = {};
         if (updateRecord && (updateRecord.status === 204)) {
@@ -113,13 +113,13 @@ module.exports.updateRecord = async (event, context) => {
 
 module.exports.deleteRecord = async (event, context) => {
     try {
-        let deletedDatabase = await databaseService.deleteDatabase(event.pathParameters);
-        console.log('databaseDeleted', deletedDatabase);
+        let deletedRecords = await crudService.deleteRecord(event.pathParameters);
+        console.log('recordDeleted', deletedRecords);
         let body = {};
         let statusCode = '';
-        // if(deletedDatabase.status && (deletedDatabase === 204)){
-        statusCode = deletedDatabase.status;
-        body = deletedDatabase.message;
+        // if(deletedRecords.status && (deletedRecords === 204)){
+        statusCode = deletedRecords.status;
+        body = deletedRecords.message;
         // }
         return {
             statusCode,

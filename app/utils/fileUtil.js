@@ -1,16 +1,31 @@
+const util = require('util')
 const fs = require('fs');
+const yaml = require('js-yaml');
+let workingDir = process.cwd();
 
-module.exports.replaceTextinFile = async function (filepath, replacement) {
+module.exports.replaceTextinFile = async function (filepath, outputFilePath, replacementArray) {
     try {
-        let fileData = await fs.readFile(filepath, 'utf8');
+        let fileData = yaml.safeLoad(fs.readFileSync(`${workingDir}${filepath}`, 'utf8'));
         let result = fileData
-        for (const [key, value] of Object.entries(replacement)) {
-            result = result.replace(key, value);
-        }
-        
-        await fs.writeFile(filepath, result, 'utf8')
+        result = JSON.stringify(result);
+        replacementArray.forEach(replacement => {
+            let replace = replacement.key;
+            let re = new RegExp(replace, "g");
+            result = result.replace(re, replacement.value);
+        });
+
+        result = JSON.parse(result);
+        console.log(util.inspect(result, { showHidden: false, depth: null }))
+
+        await fs.writeFileSync(`${workingDir}${outputFilePath}`, yaml.safeDump(result));
     } catch (err) {
         console.log(err);
     }
 
+}
+module.exports.createNewFile = async function (outputFilePath, schema) {
+    schema = JSON.stringify(schema);
+    schema = schema.replace(/"/g, " ");
+    let file = `module.exports.schemas = ${schema}`;
+    await fs.writeFileSync(`${workingDir}${outputFilePath}`, file);
 }
