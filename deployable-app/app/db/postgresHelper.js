@@ -3,7 +3,7 @@ var constants = require('../utils/constants').constants;
 
 module.exports.createRecord = async (tableName, data) => {
     try {
-        let record = await postgresDb[tableName].create(data);
+        let record = await  postgresDb.sequelize.models[tableName].create(data);
 
         return record.dataValues;
     } catch (e) {
@@ -13,7 +13,7 @@ module.exports.createRecord = async (tableName, data) => {
 
 module.exports.findRecords = async (tableName, query) => {
     try {
-        let records = await postgresDb[tableName].findAll({
+        let records = await postgresDb.sequelize.models[tableName].findAll({
             where: query
         });
 
@@ -36,7 +36,7 @@ module.exports.findRecords = async (tableName, query) => {
 // Generic function to fetch records order by need to pass [["column_name","order(either ascending or descending)"]]
 module.exports.findRecordsWithOrderBy = async (tableName, query, order=[]) => {
     try {
-        let records = await postgresDb[tableName].findAll({
+        let records = await postgresDb.sequelize.models[tableName].findAll({
             where: query,
          order: order
         });
@@ -59,7 +59,7 @@ module.exports.findRecordsWithOrderBy = async (tableName, query, order=[]) => {
 
 module.exports.updateRecord = async (tableName, data, query) => {
     try {
-        let updatedRecord = await postgresDb[tableName].update(data, {
+        let updatedRecord = await postgresDb.sequelize.models[tableName].update(data, {
             where: query
         });
 
@@ -71,7 +71,7 @@ module.exports.updateRecord = async (tableName, data, query) => {
 
 module.exports.deleteRecord = async (tableName, query) => {
     try {
-        let deletedRecord = await postgresDb[tableName].destroy({
+        let deletedRecord = await postgresDb.sequelize.models[tableName].destroy({
             where: query
         });
 

@@ -31,7 +31,7 @@ module.exports.createRecord = async (event, context) => {
 module.exports.getAllRecords = async (event, context) => {
     try {
         let allRecords = await crudService.getRecords();
-        console.log('recordCreate', allRecords);
+        console.log('allRecords', allRecords);
         let body = {};
         let statusCode = '';
         if (allRecords.body && allRecords.body.length && allRecords.body[0].id) {
@@ -62,7 +62,7 @@ module.exports.getRecordById = async (event, context) => {
         console.log('result', result);
         let statusCode = '';
         let body = {};
-        if (result && result.body && result.body[0].id) {
+        if (result && result.body && result.body.length && result.body[0].id) {
             body.message = result.message;
             body.record = result.body;
         }
@@ -97,8 +97,6 @@ module.exports.updateRecord = async (event, context) => {
             statusCode = updateRecord.status;
             body.message = updateRecord.message;
         }
-        console.log('body', body);
-        console.log('status', statusCode)
         return {
             statusCode,
             body: JSON.stringify(body)

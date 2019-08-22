@@ -17,8 +17,8 @@ provider:
   
   #environment variables
   environment: 
-    DB_USERNAME: pwd
-    DB_PASSWORD: user
+    DB_USERNAME: user
+    DB_PASSWORD: pwd
     DB_NAME: dbName
     DB_HOST: host
     DB_PORT: port
