@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "dev": "sls offline start --port 3000",
     "dbmigrate": "sequelize db:migrate"
   },
   "dependencies": {
