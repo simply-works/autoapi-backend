@@ -7,6 +7,7 @@ var fs = require('fs')
 const { appPort } = require('./config/config');
 var routePath = './app/routes/';
 var app = express();
+const { Validate } = require('./app/middleware/authController');
 
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*")
@@ -24,6 +25,10 @@ app.use(express.urlencoded({
 	extended: false
 }));
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+	Validate(req, res, next);
+});
 
 fs.readdirSync(routePath).forEach((file) => {
 	let route = routePath + file;
