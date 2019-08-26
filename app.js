@@ -11,6 +11,7 @@ const { Validate } = require('./app/middleware/authController');
 
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*")
+	.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
 		.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
