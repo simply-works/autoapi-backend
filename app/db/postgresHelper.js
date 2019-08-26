@@ -9,15 +9,26 @@ module.exports.createRecord = async (tableName, data) => {
 
         return record.dataValues;
     } catch (e) {
-        throw new Error({error:constants.SERVER_ERROR,code: 500});
+        throw new Error({ error: constants.SERVER_ERROR, code: 500 });
     }
 }
 
 
 module.exports.findRecords = async (tableName, query) => {
     try {
+        let limit;
+        let offset;
+        if (query && query.limit && query.offset) {
+            limit = parseInt(query.limit);
+            offset = parseInt(query.offset);
+            offset = (limit * (offset - 1));
+            delete query.limit;
+            delete query.offset;
+        }
         let records = await postgresDb[tableName].findAll({
-            where: query
+            where: query,
+            limit,
+            offset
         });
 
         let dataList = [];
@@ -36,11 +47,11 @@ module.exports.findRecords = async (tableName, query) => {
     }
 }
 // Generic function to fetch records order by need to pass [["column_name","order(either ascending or descending)"]]
-module.exports.findRecordsWithOrderBy = async (tableName, query, order=[]) => {
+module.exports.findRecordsWithOrderBy = async (tableName, query, order = []) => {
     try {
         let records = await postgresDb[tableName].findAll({
             where: query,
-         order: order
+            order: order
         });
 
         let dataList = [];
