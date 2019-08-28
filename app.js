@@ -11,7 +11,7 @@ const { Validate } = require('./app/middleware/authController');
 
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*")
-	.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
+		.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
 		.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
@@ -30,7 +30,9 @@ app.use(cookieParser());
 app.use((req, res, next) => {
 	Validate(req, res, next);
 });
-
+app.get('/', function (req, res) {
+	res.status(200).send('Welcome');
+})
 fs.readdirSync(routePath).forEach((file) => {
 	let route = routePath + file;
 	require(route)(app);
