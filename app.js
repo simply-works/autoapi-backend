@@ -8,7 +8,7 @@ const { appPort } = require('./config/config');
 var routePath = './app/routes/';
 var app = express();
 const { Validate } = require('./app/middleware/authController');
-
+const { createDBIfNotExists } = require('./app/utils/createDb')
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*")
 		.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
@@ -37,5 +37,9 @@ fs.readdirSync(routePath).forEach((file) => {
 	let route = routePath + file;
 	require(route)(app);
 });
-app.listen(appPort, () => console.log('Express server listening on port', appPort));
+app.listen(appPort, async () => {
+	// Create database if not exists already
+	await createDBIfNotExists();
+	console.log('Express server listening on port', appPort)
+});
 module.exports = app;
