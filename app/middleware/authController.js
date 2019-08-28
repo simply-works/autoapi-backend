@@ -9,6 +9,7 @@ const poolData = {
 const pool_region = "{region}";
 
 exports.Validate = function (req, res, next) {
+    return next()
     var token = req.headers['authorization'];
     request({
         url: `https://cognito
