@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
             required: true,
             allowNull: false
         },
+        schema_name: {
+            type: DataTypes.STRING,
+            required: true,
+            allowNull: false
+        },
         user: {
             type: DataTypes.STRING,
             required: true,

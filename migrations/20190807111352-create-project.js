@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Databases', {
+    return queryInterface.createTable('Projects', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -9,44 +9,22 @@ module.exports = {
         required: true,
         allowNull: false
       },
-      host: {
-        type: Sequelize.STRING,
+      user_id: {   //FK
+        type: Sequelize.INTEGER,
         required: true,
         allowNull: false
       },
       name: {
         type: Sequelize.STRING,
+        unique: true,
         required: true,
         allowNull: false
       },
-      user: {
+      vpc_name: {
         type: Sequelize.STRING,
-        required: true,
-        allowNull: false
       },
-      pass: {
+      aws_region: {
         type: Sequelize.STRING,
-        required: true,
-        allowNull: false
-      },
-      port: {
-        type: Sequelize.INTEGER,
-        required: true,
-        allowNull: false
-      },
-      project_id: {   // FK
-        type: Sequelize.INTEGER,
-        required: true,
-        allowNull: false,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Projects',
-          key: 'id'
-        }
-      },
-      status: {
-        type: Sequelize.ENUM('active','inactive'),
-        defaultValue: 'active',
         required: true,
         allowNull: false
       },
@@ -66,6 +44,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Databases');
+    return queryInterface.dropTable('Projects');
   }
 };
