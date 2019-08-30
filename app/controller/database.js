@@ -1,14 +1,15 @@
 const databaseService = require('../services/databaseService');
+const projectService = require('../services/projectService');
 const constants = require('../utils/constants').constants;
-
+const { createSchemaIfNotExists } = require('../db/createDb');
 
 module.exports.getDatabases = async (req, res) => {
 	try {
 		let query = {};
-		if(req.query){	
+		if (req.query) {
 			query = req.query;
 		}
-		let allDatabases = await databaseService.getDatabases({},query,{});
+		let allDatabases = await databaseService.getDatabases({}, query, {});
 		console.log('database', allDatabases);
 		let body = {};
 		let statusCode = '';
@@ -55,6 +56,14 @@ module.exports.createDatabase = async (req, res) => {
 	try {
 		let createRecord = await databaseService.createDatabase({}, {}, req.body);
 		console.log('createRecord', createRecord);
+		let path = {
+			id: createRecord.body.project_id
+		}
+		let projectDetails = await projectService.getProject(path, {}, {});
+		createRecord.project_name = projectDetails.body[0].name;
+		console.log('Project Details', projectDetails);
+		await createSchemaIfNotExists(createRecord);
+		delete createRecord.project_name;
 		let body = {};
 		let statusCode = '';
 		if (createRecord && createRecord.body && createRecord.body.id) {

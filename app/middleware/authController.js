@@ -1,19 +1,19 @@
 var request = require('request');
-
+var jwkToPem = require('jwk-to-pem'),
+    jwt = require('jsonwebtoken');
 global.fetch = require('node-fetch');
 global.navigator = () => null;
-const poolData = {
-    UserPoolId: "{pool_id}",
-    ClientId: "{app_client_id}"
-};
-const pool_region = "{region}";
 
+const { pool_id, pool_region } = require('../../config/config');
+const poolData = {
+    UserPoolId: pool_id
+};
 exports.Validate = function (req, res, next) {
-    return next()
+    // return next();
     var token = req.headers['authorization'];
+    console.log('token',token,req.headers)
     request({
-        url: `https://cognito
-    idp.${pool_region}.amazonaws.com/${poolData.UserPoolId}/.well-known/jwks.json`,
+        url: `https://cognito-idp.${pool_region}.amazonaws.com/${poolData.UserPoolId}/.well-known/jwks.json`,
         json: true
     }, function (error, response, body) {
         if (!error && response.statusCode === 200) {
