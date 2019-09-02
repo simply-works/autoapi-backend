@@ -3,6 +3,7 @@
 const postgresHelper = require('../../db/postgresHelper');
 const constants = require('../../utils/constants').constants;
 const config = require('../../../config/config');
+const {createTable} = require('../../db/createDynamicModel');
 /**
  * Get all records details from database.
  */
@@ -10,6 +11,10 @@ exports.getRecords = async (path, query, body) => {
 	try {
 		let responseObj = {};
 		Object.assign(responseObj, constants.defaultServerResponse);
+		console.log('done done ')
+
+		await createTable();
+		// return
 		let results = await postgresHelper.findRecords(config.tableName);
 		if (results && results.length) {
 			console.log('result', results);
@@ -56,6 +61,8 @@ exports.createRecord = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
+		await createTable();
+
 		let createdRecord = await postgresHelper.createRecord(config.tableName, body);
 		if (createdRecord && createdRecord.id) {
 			responseObj.status = 201;

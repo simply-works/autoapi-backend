@@ -1,5 +1,5 @@
-const { replaceTextinFile, createNewFile } = require('../utils/fileUtil.js');
-const { dialect } = require('../../config/config');
+const { replaceTextinFile, createNewFile, createMigration } = require('../utils/fileUtil.js');
+const { dialect, tenantdb_database } = require('../../config/config');
 async function createServerlessYML(data) {
     let replacement = [{
         key: "pwd",
@@ -11,7 +11,11 @@ async function createServerlessYML(data) {
     },
     {
         key: "dbName",
-        value: data.name
+        value: tenantdb_database
+    },
+    {
+        key: "schemaName",
+        value: data.schema_name
     },
     {
         key: "host",
@@ -54,8 +58,16 @@ async function updateTableSchema(schema) {
     createNewFile(outputFilePath, schema);
 }
 
+async function createTableMigration(schema, tableName) {
+    console.log('date.now', new Date().getTime(),tableName);
+    let outputFileName = new Date().getTime() + `-create-${tableName}.js`
+    const outputFilePath = `/deployable-app/migrations/${outputFileName}`;
+    createMigration(outputFilePath, schema, tableName);
+}
+
 module.exports = {
     createFunctionsYML,
     createServerlessYML,
-    updateTableSchema
+    updateTableSchema,
+    createTableMigration
 }

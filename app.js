@@ -8,11 +8,12 @@ const { appPort } = require('./config/config');
 var routePath = './app/routes/';
 var app = express();
 const { Validate } = require('./app/middleware/authController');
-const { createDBIfNotExists } = require('./app/utils/createDb')
+const { createDBIfNotExists,createSchemaIfNotExists } = require('./app/db/dbOperationHelper');
+
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
-		.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+		.header("Access-Control-Allow-Headers", "*")
+		.header("Access-Control-Allow-Methods", "*")
 	next();
 });
 
@@ -28,7 +29,11 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 
 app.use((req, res, next) => {
+	console.log('req.method',req.method,req.methods)
+	if(req.method !== "OPTIONS"){
 	Validate(req, res, next);
+}
+else next();
 });
 app.get('/', function (req, res) {
 	res.status(200).send('Welcome');
@@ -40,6 +45,7 @@ fs.readdirSync(routePath).forEach((file) => {
 app.listen(appPort, async () => {
 	// Create database if not exists already
 	await createDBIfNotExists();
+	// await createSchemaIfNotExists();
 	console.log('Express server listening on port', appPort)
 });
 module.exports = app;
