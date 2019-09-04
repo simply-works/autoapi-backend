@@ -108,7 +108,7 @@ exports.deleteProject = async (path, query, body) => {
 		}
 		let result = await postgresHelper.deleteRecord('Project', filter);
 		console.log('result', result);
-		if (result && (result !== 0)) {
+		if (result && result !== 0) {
 			responseObj.status = 204;
 			responseObj.message = "Deleted successfully";
 		} else {

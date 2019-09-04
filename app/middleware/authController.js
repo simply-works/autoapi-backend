@@ -4,19 +4,21 @@ var jwkToPem = require('jwk-to-pem'),
 global.fetch = require('node-fetch');
 global.navigator = () => null;
 
-const { pool_id, pool_region } = require('../../config/config');
-const poolData = {
-    UserPoolId: pool_id
-};
-exports.Validate = function (req, res, next) {
+const { aws_cognito_auth_url } = require('../../config/config');
+
+exports.validate = function (req, res, next) {
     // return next();
     var token = req.headers['authorization'];
-    console.log('token',token,req.headers)
     request({
-        url: `https://cognito-idp.${pool_region}.amazonaws.com/${poolData.UserPoolId}/.well-known/jwks.json`,
+        url: aws_cognito_auth_url,
         json: true
     }, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
+        if(error) {
+            console.log("Error! Unable to download JWKs");
+            res.status(500);
+            return res.send("Error! Unable to download JWKs");
+        }
+        if (response.statusCode === 200) {
             pems = {};
             var keys = body['keys'];
             for (var i = 0; i < keys.length; i++) {
@@ -46,15 +48,11 @@ exports.Validate = function (req, res, next) {
                     console.log("Invalid Token.");
                     res.status(401);
                     return res.send("Invalid tokern");
-                } else {
-                    console.log("Valid Token.");
-                    return next();
-                }
+                } 
+                console.log('payoad',payload);
+                console.log("Valid Token.");
+                return next();
             });
-        } else {
-            console.log("Error! Unable to download JWKs");
-            res.status(500);
-            return res.send("Error! Unable to download JWKs");
         }
     });
 }

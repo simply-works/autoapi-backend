@@ -14,4 +14,5 @@ module.exports = {
     tenantdb_password: process.env.TENANT_DB_PASSWORD,
     tenantdb_database: process.env.TENANT_DB_NAME,
     tenantdb_host: process.env.TENANT_DB_HOST,
+    aws_cognito_auth_url:`https://cognito-idp.${process.env.POOL_REGION}.amazonaws.com/${process.env.POOL_ID}/.well-known/jwks.json`
 }
