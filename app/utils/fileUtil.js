@@ -24,8 +24,6 @@ module.exports.replaceTextinFile = async function (filepath, outputFilePath, rep
 
 }
 module.exports.createNewFile = async function (outputFilePath, schema) {
-    schema = JSON.stringify(schema);
-    schema = schema.replace(/"/g, " ");
     let file = `module.exports.schemas = ${schema}`;
     await fs.writeFileSync(`${workingDir}${outputFilePath}`, file);
 }

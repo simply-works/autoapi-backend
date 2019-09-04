@@ -11,15 +11,18 @@ provider:
   #VPC details
   vpc:
     securityGroupIds:
-      - "<security group ID>"
+      - "vpc-e6513a8e"
     subnetIds:
-      - "<subnet ID>"
+      - "subnet-366da17a"
+      - "subnet-23a51c59"
+      - "subnet-44bfc22d"
   
   #environment variables
   environment: 
     DB_USERNAME: user
     DB_PASSWORD: pwd
     DB_NAME: dbName
+    DB_SCHEMA_NAME: schemaName
     DB_HOST: host
     DB_PORT: port
     DB_DIALECT: dialect

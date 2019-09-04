@@ -54,6 +54,8 @@ module.exports.getDatabase = async (req, res) => {
 
 module.exports.createDatabase = async (req, res) => {
 	try {
+		
+		req.body.schema_name = 'dummy';
 		let createRecord = await databaseService.createDatabase({}, {}, req.body);
 		console.log('createRecord', createRecord);
 		let path = {

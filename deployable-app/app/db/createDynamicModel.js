@@ -15,39 +15,13 @@ const sequelize = new Sequelize({
     password: config.password,
     port: config.port
 });
-console.log('config',config)
 let tableName = config.tableName;
-let schema = config.schema;
-// schema = schema ? schema : {
-//     id: {
-//         type: Number,
-//         primaryKey: true
-//     },
-//     name: {
-//         type: String
-//     }
-// }
-schema = {
-    id: {
-        type: "Number",
-        primaryKey: true
-    },
-    name: {
-        type: "String"
-    }
-}
-
+let schema = config.schema.schemas[0];
+console.log('schema',schema)
 for (let key in schema) {
     schema[key].type = schemaTranslate[schema[key].type];
 }
-// schema = schema.schemas[0];
 
-// let NewSchema = sequelize.define(tableName,
-//     schema
-// )
-// // Creating table automatically if not exists in db using above model
-//  NewSchema.sync({});
-// await sequelize.models[tableName].sync({});
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 module.exports = db;
@@ -57,7 +31,6 @@ module.exports.createTable = async () => {
     let google = await sequelize.define(tableName,
         schema
     )
-    // console.log('newschema',NewSchema);
-    // Creating table automatically if not exists in db using above model
+     // Creating table automatically if not exists in db using above model
     await google.sync({});
 }

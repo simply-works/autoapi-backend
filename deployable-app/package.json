@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "sls offline start --port 3000",
+    "dev": "sls offline start --port 4000",
     "dbmigrate": "sequelize db:migrate"
   },
   "dependencies": {

@@ -88,6 +88,8 @@ exports.updateRecord = async (path, query, body) => {
 		let filter = {
 			id: path.id
 		}
+		await createTable();
+
 		let result = await postgresHelper.updateRecord(config.tableName, data, filter);
 		if (result.indexOf(0) === 0) {
 			responseObj.message = "Record not found";
@@ -113,6 +115,9 @@ exports.deleteRecord = async (path, query, body) => {
 		let filter = {
 			id: path.id
 		}
+		await createTable();
+
+		console.log('config.tableName',config.tableName, filter);
 		let result = await postgresHelper.deleteRecord(config.tableName, filter);
 		console.log('result', result);
 
