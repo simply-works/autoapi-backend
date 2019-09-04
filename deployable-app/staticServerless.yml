@@ -11,7 +11,7 @@ provider:
   #VPC details
   vpc:
     securityGroupIds:
-      - "vpc-e6513a8e"
+      - "sg-04da4256363c3b761"
     subnetIds:
       - "subnet-366da17a"
       - "subnet-23a51c59"
