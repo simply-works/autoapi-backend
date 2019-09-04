@@ -2,6 +2,7 @@ const databaseService = require('../services/databaseService');
 const projectService = require('../services/projectService');
 const constants = require('../utils/constants').constants;
 const { createSchemaIfNotExists } = require('../db/dbOperationHelper');
+var randomstring = require("randomstring");
 
 module.exports.getDatabases = async (req, res) => {
 	try {
@@ -54,10 +55,19 @@ module.exports.getDatabase = async (req, res) => {
 
 module.exports.createDatabase = async (req, res) => {
 	try {
-		
-		req.body.schema_name = 'dummy';
+		// console.log('req.body',req.body,req.body.name);
+		// let path = {
+		// 	id: req.body.project_id
+		// }
+		// let projectDetails = await projectService.getProject(path, {}, {});
+		req.body.schema_name = `${req.body.name}${randomstring.generate(6)}`;
+		req.body.user = randomstring.generate(6);
+		req.body.pass = randomstring.generate(6);
+		req.body.port = "5432";
+		console.log('req.body.schema_fdf',req.body.schema_name);
 		let createRecord = await databaseService.createDatabase({}, {}, req.body);
 		console.log('createRecord', createRecord);
+		
 		let path = {
 			id: createRecord.body.project_id
 		}
