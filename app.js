@@ -9,13 +9,9 @@ var routePath = './app/routes/';
 var app = express();
 const { validate } = require('./app/middleware/authController');
 const { createDBIfNotExists } = require('./app/db/dbOperationHelper');
+var cors = require('cors');
 
-app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Allow-Headers", "*")
-		.header("Access-Control-Allow-Methods", "*")
-	next();
-});
+app.use(cors())
 
 // parse application/json
 app.use(bodyParser.json())
