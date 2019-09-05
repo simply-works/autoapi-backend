@@ -3,7 +3,7 @@ const projectService = require('../services/projectService');
 const constants = require('../utils/constants').constants;
 const { createSchemaIfNotExists } = require('../db/dbOperationHelper');
 var randomstring = require("randomstring");
-
+let {port} = require('../../config/config');
 module.exports.getDatabases = async (req, res) => {
 	try {
 		let query = {};
@@ -55,23 +55,25 @@ module.exports.getDatabase = async (req, res) => {
 
 module.exports.createDatabase = async (req, res) => {
 	try {
-		// console.log('req.body',req.body,req.body.name);
-		// let path = {
-		// 	id: req.body.project_id
-		// }
-		// let projectDetails = await projectService.getProject(path, {}, {});
-		req.body.schema_name = `${req.body.name}${randomstring.generate(6)}`;
-		req.body.user = randomstring.generate(6);
-		req.body.pass = randomstring.generate(6);
-		req.body.port = "5432";
-		console.log('req.body.schema_fdf',req.body.schema_name);
-		let createRecord = await databaseService.createDatabase({}, {}, req.body);
-		console.log('createRecord', createRecord);
-		
 		let path = {
-			id: createRecord.body.project_id
+			id: req.body.project_id
 		}
 		let projectDetails = await projectService.getProject(path, {}, {});
+		req.body.name = (req.body.name).replace(/ /g,'').toLowerCase();
+		req.body['schema_name'] = `${projectDetails.body[0].name}_${req.body.name}`;
+		req.body['user'] = randomstring.generate({
+			length: 5,
+			charset: 'alphabetic',
+			capitalization: 'lowercase'
+		});
+		req.body['pass'] = randomstring.generate({
+			length: 5,
+			charset: 'alphabetic',
+			capitalization: 'lowercase'
+		});
+		req.body['port'] = port;
+		req.body['host']= 'anyhost';
+		let createRecord = await databaseService.createDatabase({}, {}, req.body);
 		createRecord.project_name = projectDetails.body[0].name;
 		console.log('Project Details', projectDetails);
 		await createSchemaIfNotExists(createRecord);
@@ -79,6 +81,9 @@ module.exports.createDatabase = async (req, res) => {
 		let body = {};
 		let statusCode = '';
 		if (createRecord && createRecord.body && createRecord.body.id) {
+			delete createRecord.body.user;
+			delete createRecord.body.pass;
+			delete createRecord.body.schema_name;
 			body.createdRecord = createRecord.body;
 			statusCode = createRecord.status;
 			body.message = createRecord.message;

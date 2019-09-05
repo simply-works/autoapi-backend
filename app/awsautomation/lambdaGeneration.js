@@ -1,5 +1,5 @@
 const { replaceTextinFile, createNewFile, createMigration } = require('../utils/fileUtil.js');
-const { dialect, tenantdb_database, tenantdb_host } = require('../../config/config');
+const { dialect, tenantdb_database, tenantdb_host, port } = require('../../config/config');
 async function createServerlessYML(data) {
     let replacement = [{
         key: "pwd",
@@ -23,7 +23,7 @@ async function createServerlessYML(data) {
     },
     {
         key: "port",
-        value: data.port
+        value: port
     },
     {
         key: "postgres",

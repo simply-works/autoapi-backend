@@ -73,6 +73,7 @@ exports.createRecord = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
+		console.log('error',error);
 		return responseObj;
 	}
 }

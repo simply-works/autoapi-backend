@@ -67,7 +67,7 @@ module.exports.createSchemaIfNotExists = async (databaseDetails) => {
             }
         });
 
-        await sequelize.query(`CREATE USER ${schemaUser} WITH ENCRYPTED PASSWORD '${schemaPassword}';`).then(data => {
+        await sequelize.query(`CREATE USER ${schemaUser} WITH PASSWORD '${schemaPassword}';`).then(data => {
             console.log('create user queru', data);
         }).catch(error => {
             console.log('error', error);
