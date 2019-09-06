@@ -1,6 +1,7 @@
 const tableService = require('../services/tableService');
 const { getDatabase } = require('../services/databaseService');
 const constants = require('../utils/constants').constants;
+var randomstring = require("randomstring");
 const {
 	createFunctionsYML,
 	createServerlessYML,
@@ -68,6 +69,11 @@ module.exports.createTable = async (req, res) => {
 			let databaseDetails = await getDatabase(path);
 			databaseDetails = databaseDetails.body[0];
 			databaseDetails.tableName = createRecord.body.name;
+			databaseDetails.serviceName = `${databaseDetails}_${createRecord.body.name}`
+			databaseDetails.apiKeyValue = randomstring.generate({
+				length: 16,
+				charset: 'alphabetic'
+			});
 			await createServerlessYML(databaseDetails);
 			await updateTableSchema(createRecord.body.schema);
 			body.createdRecord = createRecord.body;

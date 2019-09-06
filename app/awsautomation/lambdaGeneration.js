@@ -36,6 +36,14 @@ async function createServerlessYML(data) {
     {
         key: "dialect",
         value: dialect
+    },
+    {
+        key: "serviceName",
+        value: data.serviceName
+    },
+    {
+        key: "apiKeyValue",
+        value: data.apiKeyValue
     }
     ]
     const filePath = '/deployable-app/staticServerless.yml';

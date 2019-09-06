@@ -1,4 +1,4 @@
-service: autoapi
+service: serviceName
 
 provider:
   name: aws
@@ -7,7 +7,9 @@ provider:
   memorySize: 512
   #aws KMS config
   #awsKmsKeyArn: arn:aws:kms:us-east-1:XXXXXX:key/some-hash
-
+  role: arn:aws:iam::639407324607:role/Lambda
+  apiKeys: # List of API keys to be used by your service API Gateway REST API
+    - apiKeyValue
   #VPC details
   vpc:
     securityGroupIds:
