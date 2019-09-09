@@ -3,7 +3,6 @@ module.exports = {
 		name: 'autoapi-backend',
 		script:'npm',
 		args : ["start"],
-		watch: true,
 		instances: 1,
 		exec_mode: 'cluster',
 		autorestart: true,
