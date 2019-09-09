@@ -1,9 +1,10 @@
 const projectService = require('../services/projectService');
 const constants = require('../utils/constants').constants;
+const { pool_region } = require('../../config/config');
 
 module.exports.createProject = async (req, res) => {
 	try {
-		req.body.aws_region = 'eu-west-2';
+		req.body.aws_region = pool_region;
 		let createRecord = await projectService.createProject({}, {}, req.body);
 		console.log('createRecord', createRecord);
 		let body = {};
@@ -26,10 +27,10 @@ module.exports.createProject = async (req, res) => {
 module.exports.getProjects = async (req, res) => {
 	try {
 		let query = {};
-		if(req.query){	
+		if (req.query) {
 			query = req.query;
 		}
-		let allProjects = await projectService.getProjects({},query,{});
+		let allProjects = await projectService.getProjects({}, query, {});
 		console.log('projects', allProjects);
 		let body = {};
 		let statusCode = '';

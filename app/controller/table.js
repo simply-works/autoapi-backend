@@ -2,19 +2,20 @@ const tableService = require('../services/tableService');
 const { getDatabase } = require('../services/databaseService');
 const constants = require('../utils/constants').constants;
 var randomstring = require("randomstring");
+const { serverless_deploy } = require('../../config/config')
 const {
 	createFunctionsYML,
 	createServerlessYML,
 	updateTableSchema
 } = require('../awsautomation/lambdaGeneration');
-
+const { executeCommand } = require('../utils/command');
 module.exports.getTables = async (req, res) => {
 	try {
 		let query = {};
-		if(req.query){	
+		if (req.query) {
 			query = req.query;
 		}
-		let allTables = await tableService.getTables({},query,{});
+		let allTables = await tableService.getTables({}, query, {});
 		console.log('tables', allTables);
 		let body = {};
 		let statusCode = '';
@@ -59,26 +60,35 @@ module.exports.getTable = async (req, res) => {
 
 module.exports.createTable = async (req, res) => {
 	try {
+		let path = { id: req.body.database_id }
+		let databaseDetails = await getDatabase(path);
+		databaseDetails = databaseDetails.body[0];
+		databaseDetails.tableName = req.body.name;
+		databaseDetails.schema_name = databaseDetails.schema_name.replace(/_/g, "-");
+		databaseDetails.serviceName = `${databaseDetails.schema_name}-${req.body.name}`
+		databaseDetails.apiKeyValue = randomstring.generate({
+			length: 16,
+			charset: 'alphabetic'
+		});
+		req.body.service_name = databaseDetails.serviceName;
+		req.body.api_key_value = databaseDetails.apiKeyValue;
 		let createRecord = await tableService.createTable({}, {}, req.body);
 		console.log('createRecord', createRecord);
 		let body = {};
 		let statusCode = '';
 		if (createRecord && createRecord.body && createRecord.body.id && createRecord.body.name) {
 			await createFunctionsYML(createRecord.body.name);
-			let path = { id: createRecord.body.database_id }
-			let databaseDetails = await getDatabase(path);
-			databaseDetails = databaseDetails.body[0];
-			databaseDetails.tableName = createRecord.body.name;
-			databaseDetails.serviceName = `${databaseDetails}_${createRecord.body.name}`
-			databaseDetails.apiKeyValue = randomstring.generate({
-				length: 16,
-				charset: 'alphabetic'
-			});
 			await createServerlessYML(databaseDetails);
 			await updateTableSchema(createRecord.body.schema);
 			body.createdRecord = createRecord.body;
 			statusCode = createRecord.status;
 			body.message = createRecord.message;
+			let Urls = await executeCommand(serverless_deploy);
+			if (!Urls) {
+				statusCode = 500;
+				body.message = "Error while creating record";
+			}
+			await tableService.updateAwsUrlsInTable(Urls, createRecord);
 		} else {
 			statusCode = 500;
 			body.message = "Error while creating record"
@@ -86,6 +96,7 @@ module.exports.createTable = async (req, res) => {
 		return res.status(statusCode).send(body);
 	}
 	catch (error) {
+		console.log('error', error);
 		return res.status(error.status).send(error.message ? error.message : constants.DEFAULT_ERROR);
 	}
 }
@@ -122,6 +133,6 @@ module.exports.deleteTable = async (req, res) => {
 		return res.status(statusCode).send(body);
 	}
 	catch (error) {
-		return res.status(error.status).send(error.message ? error.message : constants.DEFAULT_ERROR);		
+		return res.status(error.status).send(error.message ? error.message : constants.DEFAULT_ERROR);  
 	}
 }

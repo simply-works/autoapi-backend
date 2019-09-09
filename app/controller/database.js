@@ -3,7 +3,7 @@ const projectService = require('../services/projectService');
 const constants = require('../utils/constants').constants;
 const { createSchemaIfNotExists } = require('../db/dbOperationHelper');
 var randomstring = require("randomstring");
-let {port} = require('../../config/config');
+let { port, tenantdb_host } = require('../../config/config');
 module.exports.getDatabases = async (req, res) => {
 	try {
 		let query = {};
@@ -59,7 +59,7 @@ module.exports.createDatabase = async (req, res) => {
 			id: req.body.project_id
 		}
 		let projectDetails = await projectService.getProject(path, {}, {});
-		req.body.name = (req.body.name).replace(/ /g,'').toLowerCase();
+		req.body.name = (req.body.name).replace(/ /g, '').toLowerCase();
 		req.body['schema_name'] = `${projectDetails.body[0].name}_${req.body.name}`;
 		req.body['user'] = randomstring.generate({
 			length: 5,
@@ -72,7 +72,7 @@ module.exports.createDatabase = async (req, res) => {
 			capitalization: 'lowercase'
 		});
 		req.body['port'] = port;
-		req.body['host']= 'anyhost';
+		req.body['host'] = tenantdb_host;
 		let createRecord = await databaseService.createDatabase({}, {}, req.body);
 		createRecord.project_name = projectDetails.body[0].name;
 		console.log('Project Details', projectDetails);

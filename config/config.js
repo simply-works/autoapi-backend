@@ -14,5 +14,7 @@ module.exports = {
     tenantdb_password: process.env.TENANT_DB_PASSWORD,
     tenantdb_database: process.env.TENANT_DB_NAME,
     tenantdb_host: process.env.TENANT_DB_HOST,
-    aws_cognito_auth_url:`https://cognito-idp.${process.env.POOL_REGION}.amazonaws.com/${process.env.POOL_ID}/.well-known/jwks.json`
+    aws_cognito_auth_url:`https://cognito-idp.${process.env.POOL_REGION}.amazonaws.com/${process.env.POOL_ID}/.well-known/jwks.json`,
+    serverless_deploy: 'sls deploy',
+    stage: process.env.AWS_LAMBDA_STAGE || 'dev',
 }

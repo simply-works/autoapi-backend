@@ -19,6 +19,14 @@ module.exports = {
         required: true,
         allowNull: false
       },
+      service_name: {
+        type: Sequelize.STRING,
+        required: true
+      },
+      api_key_value: {
+        type: Sequelize.STRING,
+        required: true
+      },
       api_gateway_uri: {
         type: Sequelize.STRING
       },

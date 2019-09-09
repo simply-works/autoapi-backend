@@ -18,6 +18,14 @@ module.exports = (sequelize, DataTypes) => {
             required: true,
             allowNull: false
         },
+        service_name: {
+            type: DataTypes.STRING,
+            required: true
+        },
+        api_key_value: {
+            type: DataTypes.STRING,
+            required: true
+        },
         api_gateway_uri: {
             type: DataTypes.STRING
         },

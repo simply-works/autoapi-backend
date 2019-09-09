@@ -5,11 +5,11 @@ const constants = require('../utils/constants').constants;
 /**
  * Get Tables details from table.
  */
-exports.getTables = async (path, query={}, body) => {
+exports.getTables = async (path, query = {}, body) => {
 	try {
 		let responseObj = {};
 		Object.assign(responseObj, constants.defaultServerResponse);
-		let results = await postgresHelper.findRecords('Table',query);
+		let results = await postgresHelper.findRecords('Table', query);
 		if (results && results.length) {
 			console.log('result', results);
 			responseObj.body = results;
@@ -121,4 +121,20 @@ exports.deleteTable = async (path, query, body) => {
 		console.log('Error while deleting table', error);
 		return responseObj;
 	}
+}
+
+exports.updateAwsUrlsInTable = async (Urls, tableInfo) => {
+	let data = {};
+	let { apiGatewayUrl, lamdaUrl } = Urls;
+	data['api_gateway_uri'] = apiGatewayUrl;
+	data['lambda_uri'] = lamdaUrl;
+	let filter = {
+		id: tableInfo.body.id
+	}
+	let result = await postgresHelper.updateRecord('Table', data, filter);
+	if (result.indexOf(0) === 0) {
+		console.log('updated record', result);
+		return result;
+	}
+	console.log('failed updation');
 }
