@@ -132,7 +132,7 @@ exports.updateAwsUrlsInTable = async (Urls, tableInfo) => {
 		id: tableInfo.body.id
 	}
 	let result = await postgresHelper.updateRecord('Table', data, filter);
-	if (result.indexOf(0) === 0) {
+	if (result.indexOf(0) >= 0) {
 		console.log('updated record', result);
 		return result;
 	}
