@@ -1,15 +1,14 @@
 
 
-var postgresDb = require('../models/index');
-var constants = require('../utils/constants').constants;
+let postgresDb = require('../models/index');
+const { databaseErrorHandler } = require('../utils/errorHandler');
 
 module.exports.createRecord = async (tableName, data) => {
     try {
-        let record = await postgresDb[tableName].create(data);
-
+        const record = await postgresDb[tableName].create(data);
         return record.dataValues;
     } catch (e) {
-        throw new Error({ error: constants.SERVER_ERROR, code: 500 });
+        throw databaseErrorHandler(e);
     }
 }
 

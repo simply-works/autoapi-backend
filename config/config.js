@@ -17,4 +17,7 @@ module.exports = {
     aws_cognito_auth_url:`https://cognito-idp.${process.env.POOL_REGION}.amazonaws.com/${process.env.POOL_ID}/.well-known/jwks.json`,
     serverless_deploy: 'sls deploy',
     stage: process.env.AWS_LAMBDA_STAGE || 'dev',
+    cipher_algorithm: process.env.CIPHER_ALGORITHM,
+    cipher_key: process.env.CIPHER_KEY,
+    cipher_iv: process.env.CIPHER_IV
 }

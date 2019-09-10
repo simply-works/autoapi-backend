@@ -4,6 +4,8 @@ const postgresHelper = require('../../db/postgresHelper');
 const constants = require('../../utils/constants').constants;
 const config = require('../../../config/config');
 const {createTable} = require('../../db/createDynamicModel');
+const { serviceErrorHanlder } = require('../../../../app/utils/errorHandler');
+
 /**
  * Get all records details from database.
  */
@@ -74,6 +76,7 @@ exports.createRecord = async (path, query, body) => {
 		return responseObj;
 	} catch (error) {
 		console.log('error',error);
+		serviceErrorHanlder(error, responseObj);
 		return responseObj;
 	}
 }

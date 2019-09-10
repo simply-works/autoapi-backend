@@ -2,6 +2,8 @@
 
 const postgresHelper = require('../db/postgresHelper');
 const constants = require('../utils/constants').constants;
+const { serviceErrorHanlder } = require('../utils/errorHandler');
+
 /**
  * Get Tables details from table.
  */
@@ -66,6 +68,7 @@ exports.createTable = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
+		serviceErrorHanlder(error, responseObj);
 		return responseObj;
 	}
 }

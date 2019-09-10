@@ -2,6 +2,7 @@
 
 const postgresHelper = require('../db/postgresHelper');
 const constants = require('../utils/constants').constants;
+const { serviceErrorHanlder } = require('../utils/errorHandler');
 /**
  * Get Databases details from database.
  */
@@ -65,6 +66,7 @@ exports.createDatabase = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
+		serviceErrorHanlder(error, responseObj);
 		return responseObj;
 	}
 }

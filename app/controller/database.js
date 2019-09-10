@@ -67,7 +67,7 @@ module.exports.createDatabase = async (req, res) => {
 			capitalization: 'lowercase'
 		});
 		req.body['pass'] = randomstring.generate({
-			length: 5,
+			length: 6,
 			charset: 'alphabetic',
 			capitalization: 'lowercase'
 		});

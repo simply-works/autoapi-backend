@@ -1,4 +1,13 @@
 'use strict';
+/**
+ * packages
+ */
+const crypto = require('crypto');
+/**
+ * Utils
+ */
+const { encrypt, decrypt } = require('../utils/cryptography');
+
 module.exports = (sequelize, DataTypes) => {
     var Database = sequelize.define('Database', {
         id: {
@@ -44,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         status: {
-            type: DataTypes.ENUM('active','inactive'),
+            type: DataTypes.ENUM('active', 'inactive'),
             defaultValue: 'active',
             required: true,
             allowNull: false
@@ -78,6 +87,28 @@ module.exports = (sequelize, DataTypes) => {
         })
     };
     // Database.sync({});
+
+    Database.beforeSave(function (model) {
+        if (model.pass && model.pass.length >= 6) {
+            /**
+             * encrypt database password
+             */
+            model.pass = encrypt(model.pass);
+        }
+    });
+
+    Database.afterFind(function (data) {
+        if (data && Array.isArray(data) && data.length) {
+            data.forEach((element) => {
+                if(element.pass) {
+                    /**
+                     * decrypt database password
+                     */
+                    element.pass = decrypt(element.pass);
+                }
+            });
+        }
+    });
 
     return Database;
 };

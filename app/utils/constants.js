@@ -7,5 +7,8 @@ exports.constants = {
     },
     SERVER_ERROR: "Internal server error",
     DEFAULT_ERROR: "Something went wrong",
-    FETCHED_RECORD: "Fetched records"
+    FETCHED_RECORD: "Fetched records",
+    messages: {
+        UNIQUE_CONSTRAINT: 'must be unique'
+    }
 };

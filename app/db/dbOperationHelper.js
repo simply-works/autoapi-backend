@@ -6,6 +6,7 @@ const config = require('../../config/config');
 
 let dialect = config.dialect;
 let dbPort = config.port;
+
 module.exports.createDBIfNotExists = async () => {
     let database = config.database;
     let username = config.username;
@@ -25,18 +26,18 @@ module.exports.createDBIfNotExists = async () => {
             }
         });
         let exists;
-        // Fetching and checking whether the passed database exists or not
-        await sequelize.query(`SELECT datname FROM pg_database WHERE datistemplate = false and datname = '${database}';`).then(data => {
-            if (data) {
-                exists = true;
-            }
-        });
+        /**
+         * Fetching and checking whether the passed database exists or not
+         */
+        const databaseData = await sequelize.query(`SELECT datname FROM pg_database WHERE datistemplate = false and datname = '${database}';`);
+        if (databaseData && Array.isArray(databaseData) && databaseData.length && databaseData[0] && Array.isArray(databaseData[0]) && databaseData[0].length) {
+            exists = true;
+        }
         if (!exists) {
-            // Create new if not exists already
-            await sequelize.query(`CREATE DATABASE ${database}`).then(data => {
-                console.log('dbcreated', data);
-                return true;
-            });
+            /**
+             * Create new if db not exists
+             */
+            await sequelize.query(`CREATE DATABASE ${database}`);
         }
     }
     catch (error) {
