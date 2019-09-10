@@ -83,17 +83,17 @@ module.exports.createTable = async (req, res) => {
 			body.createdRecord = createRecord.body;
 			statusCode = createRecord.status;
 			body.message = createRecord.message;
+			res.status(statusCode).send(body);
 			let Urls = await executeCommand(serverless_deploy);
 			if (!Urls) {
-				statusCode = 500;
-				body.message = "Error while creating record";
+				return;
 			}
 			await tableService.updateAwsUrlsInTable(Urls, createRecord);
 		} else {
 			statusCode = 500;
 			body.message = "Error while creating record"
 		}
-		return res.status(statusCode).send(body);
+		return;
 	}
 	catch (error) {
 		console.log('error', error);
