@@ -1,6 +1,7 @@
 const databaseService = require('../services/databaseService');
 const projectService = require('../services/projectService');
 const constants = require('../utils/constants').constants;
+const { messages } = constants;
 const { createSchemaIfNotExists } = require('../db/dbOperationHelper');
 var randomstring = require("randomstring");
 let { port, tenantdb_host } = require('../../config/config');
@@ -53,45 +54,68 @@ module.exports.getDatabase = async (req, res) => {
 	}
 }
 
+/**
+ * create database in a project
+ */
 module.exports.createDatabase = async (req, res) => {
 	try {
+		let response = {
+			status: 400,
+			body: {
+				message: messages.BAD_REQUEST
+			}
+		};
 		let path = {
 			id: req.body.project_id
 		}
 		let projectDetails = await projectService.getProject(path, {}, {});
-		req.body.name = (req.body.name).replace(/ /g, '').toLowerCase();
-		req.body['schema_name'] = `${projectDetails.body[0].name}_${req.body.name}`;
-		req.body['user'] = randomstring.generate({
-			length: 5,
-			charset: 'alphabetic',
-			capitalization: 'lowercase'
-		});
-		req.body['pass'] = randomstring.generate({
-			length: 6,
-			charset: 'alphabetic',
-			capitalization: 'lowercase'
-		});
-		req.body['port'] = port;
-		req.body['host'] = tenantdb_host;
-		let createRecord = await databaseService.createDatabase({}, {}, req.body);
-		createRecord.project_name = projectDetails.body[0].name;
-		console.log('Project Details', projectDetails);
-		await createSchemaIfNotExists(createRecord);
-		delete createRecord.project_name;
-		let body = {};
-		let statusCode = '';
-		if (createRecord && createRecord.body && createRecord.body.id) {
-			delete createRecord.body.user;
-			delete createRecord.body.pass;
-			delete createRecord.body.schema_name;
-			body.createdRecord = createRecord.body;
-			statusCode = createRecord.status;
-			body.message = createRecord.message;
+		/**
+		 * If project exists in Database for the given project_id
+		 */
+		if(projectDetails && projectDetails.body && Array.isArray(projectDetails.body) && projectDetails.body.length) {
+			req.body.name = (req.body.name).replace(/ /g, '').toLowerCase();
+			req.body['schema_name'] = `${projectDetails.body[0].name}_${req.body.name}`;
+			req.body['user'] = randomstring.generate({
+				length: 5,
+				charset: 'alphabetic',
+				capitalization: 'lowercase'
+			});
+			req.body['pass'] = randomstring.generate({
+				length: 6,
+				charset: 'alphabetic',
+				capitalization: 'lowercase'
+			});
+			req.body['port'] = port;
+			req.body['host'] = tenantdb_host;
+			let createRecord = await databaseService.createDatabase({}, {}, req.body);
+			/**
+			 * If row created in `Database` table
+			 */
+			if (createRecord && createRecord.body && createRecord.body.id) {
+				createRecord.project_name = projectDetails.body[0].name;
+				await createSchemaIfNotExists(createRecord);
+				delete createRecord.project_name;	
+				delete createRecord.body.user;
+				delete createRecord.body.pass;
+				delete createRecord.body.schema_name;
+				response.body.createdRecord = createRecord.body;
+				response.body.message = createRecord.message;
+				response.status = createRecord.status;
+			} else {
+				/**
+				 * If row is not created in `Database` table
+				 */
+				response.status = createRecord.status;
+				response.body.message = createRecord.message;
+			}
 		} else {
-			statusCode = 500;
-			body.message = "Error while creating record"
+			/**
+			 * If project does not exists in Database for the given project_id
+			 */
+			response.status = projectDetails.status;
+			response.body.message = projectDetails.message;
 		}
-		return res.status(statusCode).send(body)
+		res.status(response.status).send(response.body);
 	}
 	catch (error) {
 		return res.status(error.status).send(error.message ? error.message : constants.DEFAULT_ERROR);

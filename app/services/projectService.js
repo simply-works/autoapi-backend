@@ -2,6 +2,7 @@
 
 const postgresHelper = require('../db/postgresHelper');
 const constants = require('../utils/constants').constants;
+const { messages } = constants;
 const { serviceErrorHanlder } = require('../utils/errorHandler');
 /**
  * Get Projects details from project.
@@ -41,10 +42,11 @@ exports.getProject = async (path, query, body) => {
 			responseObj.status = 200;
 			responseObj.body = results;
 			responseObj.message = constants.FETCHED_RECORD;
-			return responseObj;
 		} else {
-			throw new Error("Unable to fetch record");
+			responseObj.status = 400;
+			responseObj.message = messages.PROJECT_NOT_FOUND;
 		}
+		return responseObj;
 	} catch (error) {
 		return responseObj;
 	}

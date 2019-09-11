@@ -1,23 +1,28 @@
 const projectService = require('../services/projectService');
 const constants = require('../utils/constants').constants;
+const { messages } = constants;
 const { pool_region } = require('../../config/config');
 
 module.exports.createProject = async (req, res) => {
 	try {
+		let response = {
+			status: 400,
+			body: {
+				message: messages.BAD_REQUEST
+			}
+		};
 		req.body.aws_region = pool_region;
 		let createRecord = await projectService.createProject({}, {}, req.body);
 		console.log('createRecord', createRecord);
-		let body = {};
-		let statusCode = '';
 		if (createRecord && createRecord.body && createRecord.body.id) {
-			body.createdRecord = createRecord.body;
-			statusCode = createRecord.status;
-			body.message = createRecord.message;
+			response.body.createdRecord = createRecord.body;
+			response.status = createRecord.status;
+			response.body.message = createRecord.message;
 		} else {
-			statusCode = 500;
-			body.message = "Error while creating record"
+			response.status = 500;
+			response.body.message = "Error while creating record"
 		}
-		return res.status(statusCode).send(body);
+		res.status(response.status).send(response.body);
 	}
 	catch (error) {
 		return res.status(error.status).send(error.message ? error.message : constants.DEFAULT_ERROR);

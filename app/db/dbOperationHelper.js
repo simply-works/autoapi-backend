@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 const config = require('../../config/config');
-
-
+const { findRecords } = require('../db/postgresHelper');
+const { messages } = require('../utils/constants').constants;
 let dialect = config.dialect;
 let dbPort = config.port;
 
@@ -100,4 +100,27 @@ module.exports.createSchemaIfNotExists = async (databaseDetails) => {
         console.log('error', error);
         return;
     }
-}
+};
+
+module.exports.uniqueNameCheck = async (tableName, query) => {
+    try {
+        let isUniqueName = true;
+        let message = `Name ${messages.UNIQUE_CONSTRAINT_SUCCESS}`;
+        let statusCode = 200;
+
+        const data = await findRecords(tableName, query);
+        if(data && data.length) {
+            isUniqueName = false;
+            statusCode = 409;
+            message = `Name ${messages.UNIQUE_CONSTRAINT}`;
+        }
+        return {
+            isUniqueName,
+            message,
+            statusCode
+        };
+    } catch (error) {
+        return error;
+    }
+};
+

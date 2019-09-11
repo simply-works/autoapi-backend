@@ -1,6 +1,7 @@
 const tableService = require('../services/tableService');
 const { getDatabase } = require('../services/databaseService');
 const constants = require('../utils/constants').constants;
+const { messages } = constants;
 var randomstring = require("randomstring");
 const { serverless_deploy } = require('../../config/config')
 const {
@@ -60,40 +61,65 @@ module.exports.getTable = async (req, res) => {
 
 module.exports.createTable = async (req, res) => {
 	try {
+		let response = {
+			status: 400,
+			body: {
+				message: messages.BAD_REQUEST
+			}
+		};
 		let path = { id: req.body.database_id }
 		let databaseDetails = await getDatabase(path);
-		databaseDetails = databaseDetails.body[0];
-		databaseDetails.tableName = req.body.name;
-		databaseDetails.schema_name = databaseDetails.schema_name.replace(/_/g, "-");
-		databaseDetails.serviceName = `${databaseDetails.schema_name}-${req.body.name}`
-		databaseDetails.apiKeyValue = randomstring.generate({
-			length: 16,
-			charset: 'alphabetic'
-		});
-		req.body.service_name = databaseDetails.serviceName;
-		req.body.api_key_value = databaseDetails.apiKeyValue;
-		let createRecord = await tableService.createTable({}, {}, req.body);
-		console.log('createRecord', createRecord);
-		let body = {};
-		let statusCode = '';
-		if (createRecord && createRecord.body && createRecord.body.id && createRecord.body.name) {
-			await createFunctionsYML(createRecord.body.name);
-			await createServerlessYML(databaseDetails);
-			await updateTableSchema(createRecord.body.schema);
-			body.createdRecord = createRecord.body;
-			statusCode = createRecord.status;
-			body.message = createRecord.message;
-			res.status(statusCode).send(body);
-			let Urls = await executeCommand(serverless_deploy);
-			if (!Urls) {
-				return;
+		/**
+		 * If database Table exists in Database for the given database_id
+		 */
+		if(databaseDetails && databaseDetails.body && Array.isArray(databaseDetails.body) && databaseDetails.body.length) {
+			databaseDetails = databaseDetails.body[0];
+			databaseDetails.tableName = req.body.name;
+			databaseDetails.schema_name = databaseDetails.schema_name.replace(/_/g, "-");
+			databaseDetails.serviceName = `${databaseDetails.schema_name}-${req.body.name}`
+			databaseDetails.apiKeyValue = randomstring.generate({
+				length: 16,
+				charset: 'alphabetic'
+			});
+			req.body.service_name = databaseDetails.serviceName;
+			req.body.api_key_value = databaseDetails.apiKeyValue;
+			let createRecord = await tableService.createTable({}, {}, req.body);
+			console.log('createRecord', createRecord);
+			/**
+			 * If row created in `Table` table
+			 */
+			if (createRecord && createRecord.body && createRecord.body.id && createRecord.body.name) {
+				await createFunctionsYML(createRecord.body.name);
+				await createServerlessYML(databaseDetails);
+				await updateTableSchema(createRecord.body.schema);
+				response.body.createdRecord = createRecord.body;
+				response.status = createRecord.status;
+				response.body.message = createRecord.message;
+				/**
+				 * send API response
+				 */
+				res.status(response.status).send(response.body);
+				let Urls = await executeCommand(serverless_deploy);
+				if (!Urls) {
+					return;
+				}
+				await tableService.updateAwsUrlsInTable(Urls, createRecord);
+			} else {
+				/**
+				 * If row is not created in `Database` table
+				 */
+				response.status = createRecord.status;
+				response.body.message = createRecord.message;	
 			}
-			await tableService.updateAwsUrlsInTable(Urls, createRecord);
 		} else {
-			statusCode = 500;
-			body.message = "Error while creating record"
+			/**
+			 * If database does not exists in Database for the given database_id
+			 */
+			response.status = databaseDetails.status;
+			response.body.message = databaseDetails.message;
+
 		}
-		return;
+		res.status(response.status).send(response.body);
 	}
 	catch (error) {
 		console.log('error', error);

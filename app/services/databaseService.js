@@ -2,7 +2,10 @@
 
 const postgresHelper = require('../db/postgresHelper');
 const constants = require('../utils/constants').constants;
+const { messages } = constants;
 const { serviceErrorHanlder } = require('../utils/errorHandler');
+const { uniqueNameCheck } = require('../db/dbOperationHelper');
+
 /**
  * Get Databases details from database.
  */
@@ -41,10 +44,11 @@ exports.getDatabase = async (path, query, body) => {
 			responseObj.status = 200;
 			responseObj.body = results;
 			responseObj.message = constants.FETCHED_RECORD;
-			return responseObj;
 		} else {
-			throw new Error("Unable to fetch record");
+			responseObj.status = 400;
+			responseObj.message = messages.DATABASE_NOT_FOUND;
 		}
+		return responseObj;
 	} catch (error) {
 		return responseObj;
 	}
@@ -56,13 +60,27 @@ exports.createDatabase = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
-		let createdDatabase = await postgresHelper.createRecord('Database', body);
-		if (createdDatabase && createdDatabase.id) {
-			responseObj.status = 201;
-			responseObj.message = "Created successfully";
-			responseObj.body = createdDatabase;
+		/**
+		 * check if dbname already exists in `Database` table against project_id
+		 * If exists then throw error `Name must be unique` else create row in `Database` table
+		 */
+		const query = {
+            project_id: body.project_id,
+            name: body.name
+		};
+		let { isUniqueName, message, statusCode }= await uniqueNameCheck('Database', query);
+		if(isUniqueName) {
+			let createdDatabase = await postgresHelper.createRecord('Database', body);
+			if (createdDatabase && createdDatabase.id) {
+				responseObj.status = 201;
+				responseObj.message = "Created successfully";
+				responseObj.body = createdDatabase;
+			} else {
+				responseObj.message = "Unable to create";
+			}
 		} else {
-			responseObj.message = "Unable to create";
+			responseObj.status = statusCode;
+			responseObj.message = message;
 		}
 		return responseObj;
 	} catch (error) {

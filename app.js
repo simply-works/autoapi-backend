@@ -32,13 +32,15 @@ app.use((req, res, next) => {
 });
 app.get('/', function (req, res) {
 	res.status(200).send('Welcome');
-})
+});
 fs.readdirSync(routePath).forEach((file) => {
 	let route = routePath + file;
 	require(route)(app);
 });
 app.listen(appPort, async () => {
-	// Create database if not exists already
+	/**
+	 * Create database if not exists
+	 */
 	await createDBIfNotExists();
 	console.log('Express server listening on port', appPort)
 });

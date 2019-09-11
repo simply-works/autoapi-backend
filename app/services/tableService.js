@@ -3,6 +3,7 @@
 const postgresHelper = require('../db/postgresHelper');
 const constants = require('../utils/constants').constants;
 const { serviceErrorHanlder } = require('../utils/errorHandler');
+const { uniqueNameCheck } = require('../db/dbOperationHelper');
 
 /**
  * Get Tables details from table.
@@ -57,14 +58,28 @@ exports.createTable = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
-		let createdTable = await postgresHelper.createRecord('Table', body);
-		console.log('createTable', createdTable);
-		if (createdTable && createdTable.id) {
-			responseObj.status = 201;
-			responseObj.message = "Created successfully";
-			responseObj.body = createdTable;
-		} else {
-			responseObj.message = "Unable to create";
+		/**
+		 * check if dbname already exists in `Table` table against project_id
+		 * If exists then throw error `Name must be unique` else create row in `Table` table
+		 */
+		const query = {
+            database_id: body.database_id,
+            name: body.name
+		};
+		let { isUniqueName, message, statusCode }= await uniqueNameCheck('Table', query);
+		if(isUniqueName) {
+			let createdTable = await postgresHelper.createRecord('Table', body);
+			console.log('createTable', createdTable);
+			if (createdTable && createdTable.id) {
+				responseObj.status = 201;
+				responseObj.message = "Created successfully";
+				responseObj.body = createdTable;
+			} else {
+				responseObj.message = "Unable to create";
+			}
+		} else if(statusCode && message) {
+			responseObj.status = statusCode;
+			responseObj.message = message;
 		}
 		return responseObj;
 	} catch (error) {
