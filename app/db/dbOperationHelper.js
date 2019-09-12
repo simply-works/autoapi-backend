@@ -109,6 +109,7 @@ module.exports.uniqueNameCheck = async (tableName, query) => {
         let statusCode = 200;
 
         const data = await findRecords(tableName, query);
+        console.log('data &&&&&&&&&&&&& \n\n', data);
         if(data && data.length) {
             isUniqueName = false;
             statusCode = 409;
@@ -120,6 +121,7 @@ module.exports.uniqueNameCheck = async (tableName, query) => {
             statusCode
         };
     } catch (error) {
+        console.log('uniqueNameCheck )))))))))) \n\n', error);
         return error;
     }
 };

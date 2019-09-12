@@ -67,7 +67,8 @@ exports.createTable = async (path, query, body) => {
             database_id: body.database_id,
             name: body.name
 		};
-		let { isUniqueName, message, statusCode }= await uniqueNameCheck('Table', query);
+		let { isUniqueName, message, statusCode } = await uniqueNameCheck('Table', query);
+		console.log('{ isUniqueName, message, statusCode } ------- \n\n', { isUniqueName, message, statusCode });
 		if(isUniqueName) {
 			let createdTable = await postgresHelper.createRecord('Table', body);
 			console.log('createTable', createdTable);

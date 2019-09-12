@@ -8,6 +8,7 @@ module.exports.createRecord = async (tableName, data) => {
         const record = await postgresDb[tableName].create(data);
         return record.dataValues;
     } catch (e) {
+        console.log('e >>>>>>>>>>>>. \n\n\n', e);
         throw databaseErrorHandler(e);
     }
 }
@@ -33,15 +34,18 @@ module.exports.findRecords = async (tableName, query) => {
         let dataList = [];
 
         if (records.length) {
+            console.log('records ^^^^^^^^^^^\n\n', records);
             records.map((record) => {
                 dataList.push(record.dataValues);
             });
 
             return dataList;
         } else {
+            console.log('records ============ \n\n', records);
             return records;
         }
     } catch (e) {
+        console.log('findRecords ====== \n\n', e);
         throw new Error(e);
     }
 }
