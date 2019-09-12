@@ -1,7 +1,7 @@
 /**
  * constants
  */
-const { SERVER_ERROR, messages } = require('../utils/constants').constants;
+const { SERVER_ERROR, messages } = require('./constants').constants;
 
 /**
  * Set database error statusCode and message

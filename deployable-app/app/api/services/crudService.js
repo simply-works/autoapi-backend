@@ -4,7 +4,7 @@ const postgresHelper = require('../../db/postgresHelper');
 const constants = require('../../utils/constants').constants;
 const config = require('../../../config/config');
 const {createTable} = require('../../db/createDynamicModel');
-const { serviceErrorHanlder } = require('../../../../app/utils/errorHandler');
+const { serviceErrorHanlder } = require('../../utils/errorHandler');
 
 /**
  * Get all records details from database.
