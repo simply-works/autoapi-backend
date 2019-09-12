@@ -18,6 +18,6 @@ module.exports = {
     serverless_deploy: 'sls deploy',
     stage: process.env.AWS_LAMBDA_STAGE || 'dev',
     cipher_algorithm: 'aes-256-cbc',
-    cipher_key: process.env.CIPHER_KEY,
-    cipher_iv: process.env.CIPHER_IV
+    cipher_key: process.env.CIPHER_KEY || '429b43686af188b21bab3629eec4093f',
+    cipher_iv: process.env.CIPHER_IV || '7b05882ea2915744cf60cdc96bb82623'
 }
