@@ -34,12 +34,14 @@ module.exports.findRecords = async (tableName, query) => {
         let dataList = [];
 
         if (records.length) {
+            console.log('records ^^^^^^^^^^^\n\n', records);
             records.map((record) => {
                 dataList.push(record.dataValues);
             });
 
             return dataList;
         } else {
+            console.log('records ============ \n\n', records);
             return records;
         }
     } catch (e) {
