@@ -85,6 +85,7 @@ exports.createDatabase = async (path, query, body) => {
 		}
 		return responseObj;
 	} catch (error) {
+		console.log('createDatabase service ++++++++++++++ \n\n', error);
 		serviceErrorHanlder(error, responseObj);
 		return responseObj;
 	}

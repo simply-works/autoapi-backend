@@ -8,6 +8,7 @@ module.exports.createRecord = async (tableName, data) => {
         const record = await postgresDb[tableName].create(data);
         return record.dataValues;
     } catch (e) {
+        console.log('e >>>>>>>>>>>>. \n\n\n', e);
         throw databaseErrorHandler(e);
     }
 }

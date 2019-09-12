@@ -120,6 +120,7 @@ module.exports.uniqueNameCheck = async (tableName, query) => {
             statusCode
         };
     } catch (error) {
+        console.log('uniqueNameCheck )))))))))) \n\n', error);
         return error;
     }
 };

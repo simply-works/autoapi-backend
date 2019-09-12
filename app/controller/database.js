@@ -118,6 +118,7 @@ module.exports.createDatabase = async (req, res) => {
 		res.status(response.status).send(response.body);
 	}
 	catch (error) {
+		console.log('createDatabase ========= \n\n', error);
 		return res.status(error.status).send(error.message ? error.message : constants.DEFAULT_ERROR);
 	}
 }
