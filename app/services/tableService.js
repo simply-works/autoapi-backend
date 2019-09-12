@@ -144,9 +144,10 @@ exports.deleteTable = async (path, query, body) => {
 
 exports.updateAwsUrlsInTable = async (Urls, tableInfo) => {
 	let data = {};
-	let { apiGatewayUrl, lamdaUrl } = Urls;
+	let { apiGatewayUrl, lamdaUrl, encryptedApiKey } = Urls;
 	data['api_gateway_uri'] = apiGatewayUrl;
 	data['lambda_uri'] = lamdaUrl;
+	data['encrypted_api_key_value'] = encryptedApiKey;
 	let filter = {
 		id: tableInfo.body.id
 	}

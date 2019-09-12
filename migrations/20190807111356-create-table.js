@@ -27,6 +27,10 @@ module.exports = {
         type: Sequelize.STRING,
         required: true
       },
+      encrypted_api_key_value: {
+        type: Sequelize.STRING,
+        required: true
+      },
       api_gateway_uri: {
         type: Sequelize.STRING
       },

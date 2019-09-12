@@ -23,20 +23,19 @@ module.exports.executeCommand = (command) => {
 };
 
 function getApiGetwayUri(stdout) {
-    let Urls = {};
+    let response = {};
     let result = stdout.split('\n');
-    let value = '';
-    let index = 0;
-    for (index; index < result.length; index++) {
+    for (let index=0; index < result.length; index++) {
         if (result[index].search('https') > -1) {
-            let uri = '';
-            uri = result[index].search('https');
-            value = result[index].split('- ');
-            value = value[1];
-            break;
+            let url = result[index].split('- ');
+            url = url[1];
+            response['lamdaUrl'] = url;
+            response['apiGatewayUrl'] = url.split(`/${stage}`)[0];
+        } else if (result[index].search('api keys:') > -1) {
+            index++;
+            response['encryptedApiKey'] = result[index].substring(result[index].indexOf(': ') + 2, result[index].length)
         }
     }
-    Urls['lamdaUrl'] = value;
-    Urls['apiGatewayUrl'] = value.split(`/${stage}`)[0];
+    
     return Urls;
 }
