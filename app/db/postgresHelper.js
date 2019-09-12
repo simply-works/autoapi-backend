@@ -43,6 +43,7 @@ module.exports.findRecords = async (tableName, query) => {
             return records;
         }
     } catch (e) {
+        console.log('findRecords ====== \n\n', e);
         throw new Error(e);
     }
 }

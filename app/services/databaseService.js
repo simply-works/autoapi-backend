@@ -69,7 +69,7 @@ exports.createDatabase = async (path, query, body) => {
             project_id: body.project_id,
             name: body.name
 		};
-		let { isUniqueName, message, statusCode }= await uniqueNameCheck('Database', query);
+		let { isUniqueName, message, statusCode } = await uniqueNameCheck('Database', query);
 		if(isUniqueName) {
 			let createdDatabase = await postgresHelper.createRecord('Database', body);
 			if (createdDatabase && createdDatabase.id) {
