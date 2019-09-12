@@ -36,6 +36,5 @@ function getApiGetwayUri(stdout) {
             response['encryptedApiKey'] = result[index].substring(result[index].indexOf(': ') + 2, result[index].length)
         }
     }
-    
-    return Urls;
+    return response;
 }
