@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             required: true
         },
+        encrypted_api_key_value: {
+            type: DataTypes.STRING,
+            required: true
+        },
         api_gateway_uri: {
             type: DataTypes.STRING
         },
