@@ -98,12 +98,16 @@ module.exports.createTable = async (req, res) => {
 				/**
 				 * send API response
 				 */
-				res.status(response.status).send(response.body);
+
 				let Urls = await executeCommand(serverless_deploy);
 				if (!Urls) {
-					return;
+					return res.status(response.status).send(response.body);					;
 				}
 				await tableService.updateAwsUrlsInTable(Urls, createRecord);
+				response.body.createdRecord.api_gateway_uri = Urls.apiGatewayUrl;
+				response.body.createdRecord.lambda_uri = Urls.lamdaUrl;
+				res.status(response.status).send(response.body);
+				return;
 			} else {
 				/**
 				 * If row is not created in `Database` table
