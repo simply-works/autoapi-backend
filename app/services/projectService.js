@@ -18,6 +18,7 @@ exports.getProjects = async (path, query={}, body) => {
 			responseObj.status = 200;
 			responseObj.message = constants.FETCHED_RECORD;
 		} else {
+			responseObj.status = 200;
 			responseObj.message = "No record found";
 		}
 		return responseObj;
