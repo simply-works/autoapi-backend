@@ -49,7 +49,8 @@ exports.validate = function (req, res, next) {
                     res.status(401);
                     return res.send("Invalid tokern");
                 } 
-                console.log('payoad',payload);
+                console.log('payoad',payload.username);
+                req.body.user_id = payload.username
                 console.log("Valid Token.");
                 return next();
             });

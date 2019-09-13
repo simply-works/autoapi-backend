@@ -10,7 +10,7 @@ module.exports = {
         allowNull: false
       },
       user_id: {   //FK
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         required: true,
         allowNull: false
       },

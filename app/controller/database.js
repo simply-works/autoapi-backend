@@ -93,6 +93,8 @@ module.exports.createDatabase = async (req, res) => {
 			 */
 			if (createRecord && createRecord.body && createRecord.body.id) {
 				createRecord.project_name = projectDetails.body[0].name;
+				createRecord.body.pass = req.body.pass;
+				console.log('createedddd',createRecord)
 				await createSchemaIfNotExists(createRecord);
 				delete createRecord.project_name;	
 				delete createRecord.body.user;
