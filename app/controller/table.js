@@ -75,8 +75,8 @@ module.exports.createTable = async (req, res) => {
 		if(databaseDetails && databaseDetails.body && Array.isArray(databaseDetails.body) && databaseDetails.body.length) {
 			databaseDetails = databaseDetails.body[0];
 			databaseDetails.tableName = req.body.name;
-			databaseDetails.schema_name = databaseDetails.schema_name.replace(/_/g, "-");
-			databaseDetails.serviceName = `${databaseDetails.schema_name}-${req.body.name}`
+			// databaseDetails.schema_name = databaseDetails.schema_name.replace(/_/g, "-");
+			databaseDetails.serviceName = `${databaseDetails.schema_name.replace(/_/g, "-")}-${req.body.name}`
 			databaseDetails.apiKeyValue = randomstring.generate({
 				length: 16,
 				charset: 'alphabetic'

@@ -13,6 +13,7 @@ const sequelize = new Sequelize({
     dialect: config.dialect,
     username: config.username,
     password: config.password,
+    host: config.host,
     port: config.port
 });
 let tableName = config.tableName;
