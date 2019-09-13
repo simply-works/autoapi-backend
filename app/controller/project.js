@@ -35,6 +35,9 @@ module.exports.getProjects = async (req, res) => {
 		if (req.query) {
 			query = req.query;
 		}
+		if(req.auth && req.auth.user_id) {
+			query.user_id = req.auth.user_id;
+		}
 		let allProjects = await projectService.getProjects({}, query, {});
 		console.log('projects', allProjects);
 		let body = {};
