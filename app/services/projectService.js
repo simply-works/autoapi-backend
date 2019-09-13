@@ -59,6 +59,7 @@ exports.createProject = async (path, query, body) => {
 	let responseObj = {};
 	Object.assign(responseObj, constants.defaultServerResponse);
 	try {
+		body.name = body.name.replace(/ /g, '_').replace(/-/g, '_').toLowerCase();
 		let createdProject = await postgresHelper.createRecord('Project', body);
 		console.log('createProject', createdProject);
 		if (createdProject && createdProject.id) {
