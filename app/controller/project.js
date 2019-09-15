@@ -12,6 +12,7 @@ module.exports.createProject = async (req, res) => {
 			}
 		};
 		req.body.aws_region = pool_region;
+		req.body.user_id = req.auth.user_id;
 		let createRecord = await projectService.createProject({}, {}, req.body);
 		console.log('createRecord', createRecord);
 		if (createRecord && createRecord.body && createRecord.body.id) {
