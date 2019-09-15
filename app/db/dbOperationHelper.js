@@ -126,3 +126,61 @@ module.exports.uniqueNameCheck = async (tableName, query) => {
     }
 };
 
+module.exports.dropSchema = async (databaseDetails) => {
+    let database = config.tenantdb_database;
+    let username = config.tenantdb_username;
+    let password = config.tenantdb_password;
+    let dbHost = config.tenantdb_host;
+    // let shcemaName = `${databaseDetails.project_name}_${databaseDetails.body.name}_123`;
+    let schemaName = databaseDetails.schema_name;
+    let schemaUser = databaseDetails.user;
+    let schemaPassword = databaseDetails.pass;
+    console.log('databaseDetails', databaseDetails)
+    let sequelize;
+    try {
+        sequelize = new Sequelize(database, username, password, {
+            host: dbHost,
+            port: dbPort,
+            dialect: dialect
+        });
+
+        await sequelize.dropSchema(schemaName)
+    }
+    catch (error) {
+        console.log('error while dropping schema', error);
+        return;
+    }
+};
+
+module.exports.dropTable = async (databaseDetails) => {
+    let database = config.tenantdb_database;
+    let username = config.tenantdb_username;
+    let password = config.tenantdb_password;
+    let dbHost = config.tenantdb_host;
+    // let shcemaName = `${databaseDetails.project_name}_${databaseDetails.body.name}_123`;
+    let schemaName = databaseDetails.schema_name;
+    let schemaUser = databaseDetails.user;
+    let schemaPassword = databaseDetails.pass;
+    let tableName = databaseDetails.pass;
+    console.log('databaseDetails', databaseDetails)
+    let sequelize;
+    try {
+        sequelize = new Sequelize(database, username, password, {
+            schema: schemaName,
+            host: dbHost,
+            port: dbPort,
+            dialect: dialect,
+            pool: {
+                max: 5,
+                min: 0,
+                idle: 10000
+            }
+        });
+
+        await sequelize.query(`DROP TABLE IF EXISTS ${tableName} CASCADE;`);   
+    }
+    catch (error) {
+        console.log('error while dropping table', error);
+        return;
+    }
+};
