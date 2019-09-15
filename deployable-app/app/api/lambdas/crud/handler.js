@@ -8,9 +8,9 @@ module.exports.createRecord = async (event, context) => {
         let body = {};
         let statusCode = '';
         if (result) {
-            body = result.body;
-            if (result.status) {
-                statusCode = result.status;
+            statusCode = result.status;
+            if (result.body) {
+                body = result.body;
             }
         } else {
             statusCode = 500;
@@ -39,7 +39,7 @@ module.exports.getAllRecords = async (event, context) => {
         if (allRecords.body && allRecords.body.length && allRecords.body[0].id) {
             statusCode = allRecords.status;
             if (allRecords.body) {
-                body = allRecords.body
+                body = allRecords.body;
             }
         }
         else {
