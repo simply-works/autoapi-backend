@@ -3,17 +3,18 @@ const constants = require('../../../utils/constants').constants;
 
 module.exports.createRecord = async (event, context) => {
     try {
-        let createRecord = await crudService.createRecord({}, {}, JSON.parse(event.body));
-        console.log('createRecord', createRecord);
+        let result = await crudService.createRecord({}, {}, JSON.parse(event.body));
+        console.log('create record result in handler', result);
         let body = {};
         let statusCode = '';
-        if (createRecord && createRecord.body && createRecord.body.id) {
-            body.createdRecord = createRecord.body;
-            statusCode = createRecord.status;
-            body.message = createRecord.message;
+        if (result) {
+            body = result.body;
+            if (result.status) {
+                statusCode = result.status;
+            }
         } else {
             statusCode = 500;
-            body.message = "Error while creating record"
+            body = "Error while creating record"
         }
         return {
             statusCode,
@@ -21,9 +22,10 @@ module.exports.createRecord = async (event, context) => {
         }
     }
     catch (error) {
+        console.log("Error while creating record", error);
         return {
-            statusCode: error.status,
-            body: JSON.stringify(error.message)
+            statusCode: 500,
+            body: "Error while creating record"
         }
     }
 }
@@ -31,17 +33,18 @@ module.exports.createRecord = async (event, context) => {
 module.exports.getAllRecords = async (event, context) => {
     try {
         let allRecords = await crudService.getRecords();
-        console.log('allRecords', allRecords);
+        console.log('allRecords result in handler', allRecords);
         let body = {};
-        let statusCode = '';
+        let statusCode;
         if (allRecords.body && allRecords.body.length && allRecords.body[0].id) {
             statusCode = allRecords.status;
-            body.message = allRecords.message;
-            body.records = allRecords.body
+            if (allRecords.body) {
+                body = allRecords.body
+            }
         }
         else {
-            statusCode = 400;
-            body.message = "Record not found";
+            statusCode = 204;
+            body = "Record not found";
         }
         return {
             statusCode,
@@ -49,26 +52,30 @@ module.exports.getAllRecords = async (event, context) => {
         }
     }
     catch (error) {
+        console.log("Error while getting all records", error);
         return {
-            statusCode: error.status,
-            body: JSON.stringify(error.message ? error.message : constants.DEFAULT_ERROR)
+            statusCode: 500,
+            body: "Error while getting all records"
         }
     }
 }
 
 module.exports.getRecordById = async (event, context) => {
     try {
+        console.log('-------getRecordById------------');
         let result = await crudService.getRecordById(event.pathParameters);
-        console.log('result', result);
+        console.log('getRecordById result', result);
         let statusCode = '';
         let body = {};
-        if (result && result.body && result.body.length && result.body[0].id) {
-            body.message = result.message;
-            body.record = result.body;
+        if (result) {
+            statusCode = result.status;
+            if (result.body) {
+                body = result.body;
+            }
         }
         else {
-            statusCode = 400;
-            body.message = "Unable to fetch";
+            statusCode = 204;
+            body = "Record not found";
         }
         return {
             statusCode,
@@ -76,10 +83,10 @@ module.exports.getRecordById = async (event, context) => {
         }
     }
     catch (error) {
-        console.log("Error while fetching record", error);
+        console.log("Error while getting record by id", error);
         return {
-            statusCode: error.status,
-            body: JSON.stringify(error.message),
+            statusCode: 500,
+            body: "Error while getting record by id"
         }
     }
 }
@@ -87,24 +94,27 @@ module.exports.getRecordById = async (event, context) => {
 module.exports.updateRecord = async (event, context) => {
     try {
         let updateRecord = await crudService.updateRecord(event.pathParameters, {}, JSON.parse(event.body));
-        console.log('recordUpdate', updateRecord);
-        let statusCode = '';
+        console.log('update record handler, updated record: ', updateRecord);
+        let statusCode = 500;
         let body = {};
-        if (updateRecord && (updateRecord.status === 204)) {
+        if (updateRecord) {
             statusCode = updateRecord.status;
-            body.message = updateRecord.message;
+            if (updateRecord.body){
+                body = updateRecord.body;
+            }
         } else {
-            statusCode = updateRecord.status;
-            body.message = updateRecord.message;
+            statusCode = 500;
+            body = "Error in update record";
         }
         return {
             statusCode,
             body: JSON.stringify(body)
         }
     } catch (error) {
+        console.log("Error while updating record", error);
         return {
-            statusCode: error.status,
-            body: JSON.stringify(error.message)
+            statusCode: 500,
+            body: "Error while updating record"
         }
     }
 }
@@ -114,10 +124,13 @@ module.exports.deleteRecord = async (event, context) => {
         let deletedRecords = await crudService.deleteRecord(event.pathParameters);
         console.log('recordDeleted', deletedRecords);
         let body = {};
-        let statusCode = '';
-        // if(deletedRecords.status && (deletedRecords === 204)){
-        statusCode = deletedRecords.status;
-        body = deletedRecords.message;
+        let statusCode = 500;
+        if(deletedRecords.status){
+            statusCode = deletedRecords.status;
+        }
+        if (deletedRecords.body) {
+            body = deletedRecords.body;
+        }
         // }
         return {
             statusCode,
@@ -125,9 +138,10 @@ module.exports.deleteRecord = async (event, context) => {
         }
     }
     catch (error) {
+        console.log("Error while deleting record", error);
         return {
-            statusCode: error.status,
-            body: JSON.stringify(error.message)
+            statusCode: 500,
+            body: "Error while deleting record"
         }
     }
 }
