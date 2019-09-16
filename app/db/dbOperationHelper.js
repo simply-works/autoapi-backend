@@ -7,15 +7,16 @@ const { messages } = require('../utils/constants').constants;
 let dialect = config.dialect;
 let dbPort = config.port;
 
-module.exports.createDBIfNotExists = async () => {
-    let database = config.database;
-    let username = config.username;
-    let password = config.password;
-    let dbHost = config.host;
-
-    let sequelize;
+/**
+ * Creates a Database If it doesn't exists
+ * @param {String} database
+ * @param {String} username
+ * @param {String} password
+ * @param {String} dbHost
+ */
+module.exports.createDBIfNotExists = async (database, username, password, dbHost) => {
     try {
-        sequelize = new Sequelize("postgres", username, password, {
+        let sequelize = new Sequelize('postgres', username, password, {
             host: dbHost,
             port: dbPort,
             dialect: dialect,
@@ -43,7 +44,7 @@ module.exports.createDBIfNotExists = async () => {
     catch (error) {
         return;
     }
-}
+};
 
 module.exports.createSchemaIfNotExists = async (databaseDetails) => {
     let database = config.tenantdb_database;
@@ -102,6 +103,11 @@ module.exports.createSchemaIfNotExists = async (databaseDetails) => {
     }
 };
 
+/**
+ * Checks uniqueName in tables
+ * @param {String} tableName
+ * @param {Object} query
+ */
 module.exports.uniqueNameCheck = async (tableName, query) => {
     try {
         let isUniqueName = true;
@@ -109,7 +115,6 @@ module.exports.uniqueNameCheck = async (tableName, query) => {
         let statusCode = 200;
 
         const data = await findRecords(tableName, query);
-        console.log('data &&&&&&&&&&&&& \n\n', data);
         if(data && data.length) {
             isUniqueName = false;
             statusCode = 409;
@@ -121,8 +126,6 @@ module.exports.uniqueNameCheck = async (tableName, query) => {
             statusCode
         };
     } catch (error) {
-        console.log('uniqueNameCheck )))))))))) \n\n', error);
         return error;
     }
 };
-
