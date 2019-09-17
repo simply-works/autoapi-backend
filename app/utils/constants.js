@@ -13,6 +13,7 @@ exports.constants = {
         UNIQUE_CONSTRAINT_SUCCESS: 'is unique',
         PROJECT_NOT_FOUND: 'Project not found',
         BAD_REQUEST: 'Bad request',
-        DATABASE_NOT_FOUND: 'Database not found'
+        DATABASE_NOT_FOUND: 'Database not found',
+        TABLE_CREATE_IN_PROGRESS: 'Table creation in progress'
     }
 };

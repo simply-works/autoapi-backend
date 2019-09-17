@@ -67,6 +67,13 @@ module.exports.createTable = async (req, res) => {
 				message: messages.BAD_REQUEST
 			}
 		};
+		res.status(202).send({
+			status: 202,
+			body: {
+				message: messages.TABLE_CREATE_IN_PROGRESS
+			}
+		});
+
 		let path = { id: req.body.database_id }
 		let databaseDetails = await getDatabase(path);
 		/**
@@ -97,10 +104,6 @@ module.exports.createTable = async (req, res) => {
 				response.body.createdRecord = createRecord.body;
 				response.status = createRecord.status;
 				response.body.message = createRecord.message;
-				/**
-				 * send API response
-				 */
-
 				let Urls = await executeCommand(serverless_deploy);
 				if (!Urls) {
 					return res.status(response.status).send(response.body);					;
@@ -108,7 +111,7 @@ module.exports.createTable = async (req, res) => {
 				await tableService.updateAwsUrlsInTable(Urls, createRecord);
 				response.body.createdRecord.api_gateway_uri = Urls.apiGatewayUrl;
 				response.body.createdRecord.lambda_uri = Urls.lamdaUrl;
-				res.status(response.status).send(response.body);
+				// res.status(response.status).send(response.body);
 				return;
 			} else {
 				/**
@@ -125,7 +128,7 @@ module.exports.createTable = async (req, res) => {
 			response.body.message = databaseDetails.message;
 
 		}
-		res.status(response.status).send(response.body);
+		// res.status(response.status).send(response.body);
 	}
 	catch (error) {
 		console.log('error', error);
